@@ -143,34 +143,43 @@ AI AnimeVerse © 2026
 </footer>
 
 <script>
+    function characterGen(){
 
-function characterGen(){
 let idea=document.getElementById("characterInput").value;
 
 document.getElementById("characterOutput").innerHTML=
 `
-<b>Name:</b> Akira Frostflame<br><br>
-<b>Powers:</b> Ice manipulation and dragon summoning.<br><br>
-<b>Story:</b> A young warrior born during a frozen eclipse who seeks the legendary Dragon Throne.
-`;
-}
+<b>Name:</b> ${idea}<br><br>
 
-function worldGen(){
+<b>Powers:</b> Legendary Anime Ability<br><br>
+
+<b>Story:</b>
+${idea} was born during a rare celestial event and now seeks to unlock their true destiny while battling powerful enemies across the world.
+`;
+    }
+    function worldGen(){
+
+let idea=document.getElementById("worldInput").value;
+
 document.getElementById("worldOutput").innerHTML=
 `
-Skyhaven is a kingdom of floating islands where magic crystals power entire civilizations and dragons guard ancient secrets.
-`;
-}
+<b>World:</b> ${idea}<br><br>
 
-function movieGen(){
+A magical realm filled with ancient ruins, powerful kingdoms, hidden dragons and mysterious energy that shapes the fate of all living beings.
+`;
+    }
+    function movieGen(){
+
+let idea=document.getElementById("movieInput").value;
+
 document.getElementById("movieOutput").innerHTML=
 `
-<b>Title:</b> The Last Blade of Eternity<br><br>
-A fallen samurai must unite rival kingdoms to stop forgotten gods from awakening beneath the world.
+<b>Title:</b> ${idea}<br><br>
+
+A legendary adventure where heroes must unite to stop a growing darkness before it consumes the entire world.
 `;
-}
+    }
+    b
 
-</script>
+    
 
-</body>
-    </html>
