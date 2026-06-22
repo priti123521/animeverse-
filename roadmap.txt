@@ -1,0 +1,10 @@
+AnimeVerse Features
+
+1. Anime Character Generator
+2. Fantasy World Generator
+3. Anime Movie Generator
+4. AI Image Generator
+5. User Accounts
+6. Save Creations
+7. Premium Subscription
+8. Mobile App
