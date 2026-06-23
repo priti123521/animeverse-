@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI AnimeVerse</title>
+<title>AI AnimeVerse v3.0</title>
 
 <style>
 body{
@@ -75,17 +75,24 @@ opacity:0.9;
 
 .result{
 margin-top:15px;
-padding:15px;
+padding:20px;
 background:#22222d;
 border-radius:10px;
+line-height: 1.6;
 }
 
-/* Image styling */
+.result h3 {
+margin-top: 0;
+color: #ff6b00;
+border-bottom: 1px solid #333;
+padding-bottom: 8px;
+}
+
 .gen-image {
 width: 100%;
-max-width: 400px;
+max-width: 450px;
 border-radius: 10px;
-margin-top: 15px;
+margin-top: 20px;
 display: block;
 box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 background: #111;
@@ -109,34 +116,34 @@ color:#999;
 <body>
 
 <header>
-🔥 AI AnimeVerse
+🔥 AI AnimeVerse v3.0
 </header>
 
 <section class="hero">
 <h1>Create Your Own Anime Universe</h1>
-<p>Generate characters, fantasy worlds and movie ideas with AI visuals.</p>
+<p>Generate highly-detailed characters, deep world lore, and complete movie outlines.</p>
 </section>
 
 <div class="container">
 
 <div class="card">
-<h2>🎨 Anime Character Generator</h2>
-<input id="characterInput" placeholder="Example: Ice princess with dragon powers">
-<button onclick="characterGen()">Generate Character</button>
+<h2>🎨 Character Generator</h2>
+<input id="characterInput" placeholder="Example: A prince with shadow powers">
+<button onclick="characterGen()">Generate Character Profile</button>
 <div id="characterOutput" class="result" style="display:none;"></div>
 </div>
 
 <div class="card">
-<h2>🌍 Fantasy World Generator</h2>
-<input id="worldInput" placeholder="Example: Floating islands above an endless ocean">
-<button onclick="worldGen()">Generate World</button>
+<h2>🌍 World Generator</h2>
+<input id="worldInput" placeholder="Example: A kingdom floating above the clouds">
+<button onclick="worldGen()">Generate World Lore</button>
 <div id="worldOutput" class="result" style="display:none;"></div>
 </div>
 
 <div class="card">
-<h2>🎬 Anime Movie Generator</h2>
-<input id="movieInput" placeholder="Example: Last samurai fighting ancient gods">
-<button onclick="movieGen()">Generate Movie</button>
+<h2>🎬 Movie Generator</h2>
+<input id="movieInput" placeholder="Example: A dragon war between two empires">
+<button onclick="movieGen()">Generate Movie Pitch</button>
 <div id="movieOutput" class="result" style="display:none;"></div>
 </div>
 
@@ -155,56 +162,57 @@ AI AnimeVerse © 2026
 </footer>
 
 <script>
-const powers = [
-    "Temporal Rewind & Chrono-Blades", "Shadow Necromancy", "Celestial Star-Summoning", 
-    "Absolute Zero Cryomancy", "Void Alteration", "Cursed Flame Manifestation", 
-    "Mechanical Alchemy", "Soul-Weaving Thread Manipulation"
-];
+// --- RANDOMIZATION POOLS FOR V3.0 ROADMAP ---
+const charNames = ["Ren Hikari", "Kaelen Vex", "Sora Amamiya", "Asuka Kurogane", "Yuki Tsukiyo", "Zane Jaeger", "Mei Lin", "Shinjiro Ryuu"];
+const charAppearances = ["Spiky crimson hair, heterochromia eyes, wearing a tattered midnight-black battle cloak.", "Silver hair, sharp emerald eyes, dressed in elegant royal armor laced with glowing runes.", "Long white hair tied back, wearing a traditional traditional haori embedded with micro-technology.", "Dark blue undercut, mechanical left arm, wearing standard cybernetic tracking gear."];
+const charPowers = ["Absolute Umbral manipulation (can shape, freeze, and travel through physical shadows).", "Quantum Accelerating Fire Magic (creates flames that speed up structural decay).", "Starlight Weaver (converts cosmic rays into physical blades and barriers).", "Aether Resonance (can override and control the mechanical circuitry of weapons)."];
+const charPersonalities = ["Stoic, analytical, fiercely loyal to a fault, but struggles with a cynical worldview.", "Playful and erratic on the surface, but deeply calculated and haunted by past failures.", "Arrogant, deeply prideful of royal lineage, yet harboring a secret soft spot for outcasts.", "Quiet, scholarly, avoids fighting unless strictly driven by a moral duty or survival."];
+const charWeaknesses = ["Using maximum energy rapidly drains their physical stamina, accelerating aging.", "Highly susceptible to flashbangs or high-intensity bright light bursts.", "Emotionally volatile—loses control of their powers if someone they trust is threatened.", "Their special abilities completely nullify whenever they cross natural running water."];
 
-const backstories = [
-    "was raised by an exiled clan in hiding, training for the day they would reclaim their family's stolen throne.",
-    "accidentally absorbed a forbidden artifact as a child and is now hunted by both a corrupt empire and rogue spirits.",
-    "woke up in an ancient ruin with no memories, possessing a weapon that can cut through the fabric of reality itself.",
-    "is a brilliant, cynical prodigy who unlocked a taboo magic style, choosing to fight the darkness alone from the shadows."
-];
+const worldNames = ["Neo-Aethelgard", "The Sunken Cradle of Eldoria", "Zephyrus Prime", "The Obsidian Expanse", "Solaria IV"];
+const worldGeographies = ["A massive chain of floating landmasses anchored to a core elemental tempest below.", "An endless landscape of bioluminescent mechanical forests resting under shifting neon auroras.", "A massive subterranean cavern ringed with active lava trenches and zero-gravity vertical chasms.", "A desert realm dotted with vast glass structures produced by historic localized lightning strikes."];
+const worldMagic = ["A systematic energy pattern known as Glyphs, drawn using refined liquid stardust.", "A biologically tied bloodline trait where kinetic momentum is stored and expelled at will.", "An ancient spiritual pact made with spectral beast gods requiring seasonal equivalent exchange.", "Alchemical integration combining relic technology with active core crystal frequencies."];
+const worldFactions = ["The Obsidian Syndicate vs. The High Council of Sages", "The Rogue Sky-Pirate Armada vs. The Ironclad Imperial Guard", "The Keepers of the Eternal Flame vs. The Abyssal Deep Cult", "The Autonomous Automaton Alliance vs. The Biomancy Royalists"];
+const worldCreatures = ["Void-Stalker Dragons (beasts that phasing in and out of sight)", "Chrono-Gryphons (avian predators capable of pausing time for a single second)", "Titan Shard-Golems (moving geological structures powered by pure crystal magic)", "Phantom Core-Leviathans (colossal serpents roaming the atmospheric winds)"];
 
-const worldThemes = [
-    "where gravity acts unpredictably and floating landmasses are tethered together by massive, ancient iron chains.",
-    "plunged into an eternal neon-lit twilight, where magic-infused technology is fueled by harvested stardust.",
-    "carved entirely into the roots of a world-spanning tree, where the upper branches harbor gods and the depths hide monsters.",
-    "shattered into thousands of moving tectonic plates controlled by powerful, rivaling guild airships."
-];
-
-const moviePlots = [
-    "A reluctant crew must pull off a dangerous heist against an immortal emperor to steal back the sun.",
-    "When a massive rift opens in the sky, an estranged master and student must reunite to seal it before time itself unravels.",
-    "A high-stakes survival tournament where the prize isn't glory, but the right to rewrite one historical event.",
-    "An ancient, mechanical deity awakens from a thousand-year slumber, forcing rival nations to form an uneasy alliance."
-];
+const movieTitles = ["Wings of Retribution: Broken Sky", "The Last Alchemist: Shadow Legacy", "Echoes of the Void: Dragonfall", "Chronicles of the Iron Shard", "Stardust Rebirth: Genesis"];
+const movieVillains = ["Lord Malakor, an immortal warlord trying to force a global reset by shattering the moon.", "The Crimson Empress, a former hero who turned to forbidden arts to save her dying family line.", "Apex Omega, an awakening ancient biomechanical god that views humanity as a logic error.", "The Silent Chancellor, an advisor manipulating world treaties to unleash an army of demons."];
+const movieTwists = ["The protagonist discover they are actually a clone created by the villain they are hunting.", "The legendary protective magical barrier keeping the world safe is secretly feeding on civilian lifeforces.", "The 'ancient prophecy' was entirely forged by a rebel faction to manipulate the current generation.", "The villain's goal was actually right all along, attempting to prevent an even bigger universal calamity."];
+const movieEndings = ["A heartbreaking sacrifice where the hero seals themselves away forever to ensure the world survives.", "A spectacular sky battle culminating in a new era of uneasy peace and rebuilt alliances.", "The main villain is defeated, but the closing scene reveals a second ancient mechanical god opening its eyes.", "The protagonist chooses to destroy the entire magic system entirely, rendering everyone completely human."];
 
 function getRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// --- GENERATOR FUNCTIONS ---
+
 function characterGen(){
     let idea = document.getElementById("characterInput").value;
     if(!idea) return alert("Please enter a character prompt!");
     
-    let randomPower = getRandom(powers);
-    let randomStory = getRandom(backstories);
+    let name = getRandom(charNames);
+    let age = Math.floor(Math.random() * (25 - 16 + 1)) + 16; // Random anime protagonist age between 16 and 25
+    let appearance = getRandom(charAppearances);
+    let power = getRandom(charPowers);
+    let personality = getRandom(charPersonalities);
+    let weakness = getRandom(charWeaknesses);
     
-    // Create an optimized image prompt targeting anime style
-    let imagePrompt = encodeURIComponent(`anime style portrait of ${idea}, master of ${randomPower}, highly detailed, vibrant colors, key visual`);
+    let imagePrompt = encodeURIComponent(`anime key visual portrait of ${name}, ${appearance}, master of ${power}, vibrant lighting`);
     let imageUrl = `https://image.pollinations.ai/p/${imagePrompt}?width=500&height=500&seed=${Math.floor(Math.random() * 10000)}&nologo=true`;
 
     let outputDiv = document.getElementById("characterOutput");
     outputDiv.style.display = "block";
     outputDiv.innerHTML = `
-        <b>Concept:</b> ${idea}<br><br>
-        <b>Powers:</b> ${randomPower}<br><br>
-        <b>Story:</b> The character ${randomStory}<br><br>
-        <b>AI Visual representation:</b><br>
-        <img class="gen-image" src="${imageUrl}" alt="Generating character artwork...">
+        <h3>🎭 Character File: ${name}</h3>
+        <b>Input Concept:</b> ${idea}<br><br>
+        <b>Age:</b> ${age} years old<br>
+        <b>Appearance:</b> ${appearance}<br><br>
+        <b>Core Powers:</b> ${power}<br>
+        <b>Personality Matrix:</b> ${personality}<br>
+        <b>Critical Weakness:</b> ${weakness}<br><br>
+        <b>Origin Story:</b> Born into a destiny tied to "${idea}", ${name} must master their chaotic power while evading enemies across the realm.
+        <br><br>
+        <img class="gen-image" src="${imageUrl}" alt="Character visual">
     `;
 }
 
@@ -212,18 +220,27 @@ function worldGen(){
     let idea = document.getElementById("worldInput").value;
     if(!idea) return alert("Please enter a world prompt!");
     
-    let randomTheme = getRandom(worldThemes);
+    let wName = getRandom(worldNames);
+    let geo = getRandom(worldGeographies);
+    let magic = getRandom(worldMagic);
+    let faction = getRandom(worldFactions);
+    let creature = getRandom(worldCreatures);
     
-    let imagePrompt = encodeURIComponent(`anime background landscape scenery, ${idea}, ${randomTheme}, majestic cinematic lighting, makoto shinkai style`);
+    let imagePrompt = encodeURIComponent(`epic anime landscape scenery background, ${wName}, ${geo}, cinematic concept art`);
     let imageUrl = `https://image.pollinations.ai/p/${imagePrompt}?width=600&height=400&seed=${Math.floor(Math.random() * 10000)}&nologo=true`;
 
     let outputDiv = document.getElementById("worldOutput");
     outputDiv.style.display = "block";
     outputDiv.innerHTML = `
-        <b>World Core:</b> ${idea}<br><br>
-        <b>Lore:</b> A breathtaking realm ${randomTheme}<br><br>
-        <b>AI Environment Concept:</b><br>
-        <img class="gen-image" src="${imageUrl}" alt="Generating world concept artwork...">
+        <h3>🌍 Realm Codex: ${wName}</h3>
+        <b>Input Concept:</b> ${idea}<br><br>
+        <b>Geography:</b> ${geo}<br>
+        <b>Magic System:</b> ${magic}<br><br>
+        <b>Dominant Factions:</b> ${faction}<br>
+        <b>Native Creatures:</b> ${creature}<br><br>
+        <b>History Brief:</b> Inspired by a dream of "${idea}", this sector evolved over eons into a contested center of magical authority.
+        <br><br>
+        <img class="gen-image" src="${imageUrl}" alt="World visual">
     `;
 }
 
@@ -231,18 +248,28 @@ function movieGen(){
     let idea = document.getElementById("movieInput").value;
     if(!idea) return alert("Please enter a movie prompt!");
     
-    let randomPlot = getRandom(moviePlots);
+    let title = getRandom(movieTitles);
+    let primaryHero = getRandom(charNames);
+    let villain = getRandom(movieVillains);
+    let twist = getRandom(movieTwists);
+    let ending = getRandom(movieEndings);
     
-    let imagePrompt = encodeURIComponent(`anime movie poster style, dramatic composition, ${idea}, action fantasy, official cinematic illustration`);
+    let imagePrompt = encodeURIComponent(`anime movie poster art composition, dynamic action layout, ${title}, detailed`);
     let imageUrl = `https://image.pollinations.ai/p/${imagePrompt}?width=500&height=600&seed=${Math.floor(Math.random() * 10000)}&nologo=true`;
 
     let outputDiv = document.getElementById("movieOutput");
     outputDiv.style.display = "block";
     outputDiv.innerHTML = `
-        <b>Title Idea:</b> ${idea}<br><br>
-        <b>Synopsis:</b> ${randomPlot}<br><br>
-        <b>AI Movie Poster:</b><br>
-        <img class="gen-image" src="${imageUrl}" alt="Generating movie poster...">
+        <h3>🎬 Production Sheet: ${title}</h3>
+        <b>Core Premise:</b> ${idea}<br><br>
+        <b>Main Lead:</b> ${primaryHero} & Ally Network<br>
+        <b>Central Threat (Villain):</b> ${villain}<br><br>
+        <b>Synopsis:</b> Against the backdrop of "${idea}", heroes mobilize to break a historic cycle of violence before the final hour struck.
+        <br><br>
+        <b>Major Plot Twist:</b> ${twist}<br>
+        <b>Ending Resolution:</b> ${ending}
+        <br><br>
+        <img class="gen-image" src="${imageUrl}" alt="Movie poster visual">
     `;
 }
 </script>
