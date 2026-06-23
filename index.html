@@ -1,157 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI AnimeVerse</title>
-
-<style>
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#0b0b0f;
-color:white;
-}
-
-header{
-background:linear-gradient(90deg,#ff6b00,#ff0000);
-padding:20px;
-text-align:center;
-font-size:32px;
-font-weight:bold;
-}
-
-.hero{
-padding:40px 20px;
-text-align:center;
-}
-
-.hero h1{
-font-size:40px;
-margin-bottom:10px;
-}
-
-.hero p{
-color:#cccccc;
-}
-
-.container{
-max-width:1000px;
-margin:auto;
-padding:20px;
-}
-
-.card{
-background:#18181f;
-padding:20px;
-margin-bottom:20px;
-border-radius:15px;
-box-shadow:0 0 10px rgba(255,255,255,0.08);
-}
-
-input{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-margin-top:10px;
-margin-bottom:10px;
-box-sizing: border-box; /* Ensures padding doesn't overflow the card */
-}
-
-button{
-background:#ff4500;
-color:white;
-border:none;
-padding:12px 20px;
-border-radius:10px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-opacity:0.9;
-}
-
-.result{
-margin-top:15px;
-padding:15px;
-background:#22222d;
-border-radius:10px;
-}
-
-.premium{
-background:linear-gradient(135deg,#ffd700,#ff8c00);
-color:black;
-font-weight:bold;
-text-align:center;
-}
-
-footer{
-text-align:center;
-padding:20px;
-color:#999;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-🔥 AI AnimeVerse
-</header>
-
-<section class="hero">
-<h1>Create Your Own Anime Universe</h1>
-<p>Generate characters, fantasy worlds and movie ideas.</p>
-</section>
-
-<div class="container">
-
-<div class="card">
-<h2>🎨 Anime Character Generator</h2>
-<input id="characterInput" placeholder="Example: Ice princess with dragon powers">
-<button onclick="characterGen()">Generate Character</button>
-<div id="characterOutput" class="result"></div>
-</div>
-
-<div class="card">
-<h2>🌍 Fantasy World Generator</h2>
-<input id="worldInput" placeholder="Example: Floating islands above an endless ocean">
-<button onclick="worldGen()">Generate World</button>
-<div id="worldOutput" class="result"></div>
-</div>
-
-<div class="card">
-<h2>🎬 Anime Movie Generator</h2>
-<input id="movieInput" placeholder="Example: Last samurai fighting ancient gods">
-<button onclick="movieGen()">Generate Movie</button>
-<div id="movieOutput" class="result"></div>
-</div>
-
-<div class="card premium">
-<h2>💎 Premium Features</h2>
-<p>AI Anime Images</p>
-<p>Unlimited Generations</p>
-<p>Exclusive Anime Worlds</p>
-<p>Coming Soon</p>
-</div>
-
-</div>
-
-<footer>
-AI AnimeVerse © 2026
-</footer>
-
 <script>
+// Randomization pools to make outcomes dynamic
+const powers = [
+    "Temporal Rewind & Chrono-Blades", "Shadow Necromancy", "Celestial Star-Summoning", 
+    "Absolute Zero Cryomancy", "Void Alteration", "Cursed Flame Manifestation", 
+    "Mechanical Alchemy", "Soul-Weaving Thread Manipulation"
+];
+
+const backstories = [
+    "was raised by an exiled clan in hiding, training for the day they would reclaim their family's stolen throne.",
+    "accidentally absorbed a forbidden artifact as a child and is now hunted by both a corrupt empire and rogue spirits.",
+    "woke up in an ancient ruin with no memories, possessing a weapon that can cut through the fabric of reality itself.",
+    "is a brilliant, cynical prodigy who unlocked a taboo magic style, choosing to fight the darkness alone from the shadows."
+];
+
+const worldThemes = [
+    "where gravity acts unpredictably and floating landmasses are tethered together by massive, ancient iron chains.",
+    "plunged into an eternal neon-lit twilight, where magic-infused technology is fueled by harvested stardust.",
+    "carved entirely into the roots of a world-spanning tree, where the upper branches harbor gods and the depths hide monsters.",
+    "shattered into thousands of moving tectonic plates controlled by powerful, rivaling guild airships."
+];
+
+const moviePlots = [
+    "A reluctant crew must pull off a dangerous heist against an immortal emperor to steal back the sun.",
+    "When a massive rift opens in the sky, an estranged master and student must reunite to seal it before time itself unravels.",
+    "A high-stakes survival tournament where the prize isn't glory, but the right to rewrite one historical event.",
+    "An ancient, mechanical deity awakens from a thousand-year slumber, forcing rival nations to form an uneasy alliance."
+];
+
+// Helper function to pick a random item from an array
+function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
 function characterGen(){
     let idea = document.getElementById("characterInput").value;
     if(!idea) return alert("Please enter a character prompt!");
     
+    let randomPower = getRandom(powers);
+    let randomStory = getRandom(backstories);
+    
     document.getElementById("characterOutput").innerHTML = `
-        <b>Name:</b> ${idea}<br><br>
-        <b>Powers:</b> Legendary Anime Ability<br><br>
-        <b>Story:</b> ${idea} was born during a rare celestial event and now seeks to unlock their true destiny while battling powerful enemies across the world.
+        <b>Concept:</b> ${idea}<br><br>
+        <b>Powers:</b> ${randomPower}<br><br>
+        <b>Story:</b> The character ${randomStory}
     `;
 }
 
@@ -159,9 +50,11 @@ function worldGen(){
     let idea = document.getElementById("worldInput").value;
     if(!idea) return alert("Please enter a world prompt!");
     
+    let randomTheme = getRandom(worldThemes);
+    
     document.getElementById("worldOutput").innerHTML = `
-        <b>World:</b> ${idea}<br><br>
-        A magical realm filled with ancient ruins, powerful kingdoms, hidden dragons and mysterious energy that shapes the fate of all living beings.
+        <b>World Core:</b> ${idea}<br><br>
+        <b>Lore:</b> A breathtaking realm ${randomTheme}
     `;
 }
 
@@ -169,12 +62,13 @@ function movieGen(){
     let idea = document.getElementById("movieInput").value;
     if(!idea) return alert("Please enter a movie prompt!");
     
+    let randomPlot = getRandom(moviePlots);
+    
     document.getElementById("movieOutput").innerHTML = `
-        <b>Title:</b> ${idea}<br><br>
-        A legendary adventure where heroes must unite to stop a growing darkness before it consumes the entire world.
+        <b>Title Idea:</b> ${idea}<br><br>
+        <b>Synopsis:</b> ${randomPlot}
     `;
 }
 </script>
 
-</body>
-</html>
+
