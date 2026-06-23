@@ -13,6 +13,24 @@
     --accent-red: #ff0000;
     --text-muted: #cccccc;
     --sidebar-width: 240px;
+    .download-btn {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.2s;
+}
+
+.download-btn:hover {
+    background: #333;
+    border-color: var(--accent-orange);
 }
 
 body {
@@ -388,8 +406,356 @@ function renderLibrary() {
             </div>
         `;
     });
+
+<script>
+// Mock data pools for generation fallback
+const charNames = ["Ren Hikari", "Kaelen Vex", "Sora Amamiya", "Asuka Kurogane"];
+const charPowers = ["Absolute Umbral manipulation", "Quantum Accelerating Fire Magic", "Starlight Weaver"];
+const charBackstories = ["was raised by an exiled clan in hiding.", "accidentally absorbed a forbidden artifact.", "woke up in an ancient ruin with no memories."];
+
+const worldNames = ["Neo-Aethelgard", "Zephyrus Prime", "The Obsidian Expanse"];
+const worldGeographies = ["A massive chain of floating landmasses.", "An endless landscape of bioluminescent mechanical forests."];
+
+const movieTitles = ["Wings of Retribution: Broken Sky", "The Last Alchemist: Shadow Legacy"];
+const moviePlots = ["A reluctant crew must pull off a dangerous heist against an emperor.", "When a massive rift opens in the sky, an estranged master must seal it."];
+
+// State variables
+let isPremiumUser = false; 
+
+// Load saved account session on boot up
+document.addEventListener("DOMContentLoaded", () => {
+    let savedUser = localStorage.getItem("animeVerse_user");
+    if (savedUser) {
+        initializeDashboard(savedUser);
+    }
+    
+    // Check if they were already premium from a past session
+    if (localStorage.getItem("animeVerse_premium") === "true") {
+        activatePremiumUI();
+    }
+});
+
+function handleLogin() {
+    let name = document.getElementById("usernameInput").value.trim();
+    if (!name) return alert("Please enter a valid username!");
+    
+    localStorage.setItem("animeVerse_user", name);
+    initializeDashboard(name);
+}
+
+function handleLogout() {
+    localStorage.removeItem("animeVerse_user");
+    localStorage.removeItem("animeVerse_premium");
+    isPremiumUser = false;
+    document.getElementById("login-gate").style.display = "flex";
+}
+
+function initializeDashboard(username) {
+    document.getElementById("login-gate").style.display = "none";
+    document.getElementById("welcomeName").innerText = username;
+    document.getElementById("matrixUsername").innerText = username;
+    
+    renderLibrary();
+}
+
+// 🔀 NAVIGATION LINK CONTROLLER
+function switchTab(pageId, element) {
+    document.querySelectorAll('.dashboard-page').forEach(page => page.classList.remove('active-page'));
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    
+    document.getElementById(pageId).classList.add('active-page');
+    element.classList.add('active');
+}
+
+function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// 🎰 SYSTEM GENERATOR
+function runGeneration(type) {
+    let idea = document.getElementById(`${type}Input`).value.trim();
+    if (!idea) return alert("Please enter a prompt first!");
+
+    let outputEl = document.getElementById(`${type}Output`);
+    outputEl.style.display = "block";
+
+    let payload = "";
+    if (type === 'character') {
+        let name = getRandom(charNames);
+        payload = `<h3>🎭 Character Profile: ${name}</h3><b>Concept:</b> ${idea}<br><b>Powers:</b> ${getRandom(charPowers)}<br><b>Story:</b> ${name} ${getRandom(charBackstories)}`;
+    } else if (type === 'world') {
+        let wName = getRandom(worldNames);
+        payload = `<h3>🌍 Realm Codex: ${wName}</h3><b>Concept:</b> ${idea}<br><b>Geography:</b> ${getRandom(worldGeographies)}`;
+    } else {
+        let title = getRandom(movieTitles);
+        payload = `<h3>🎬 Film Production Sheet: ${title}</h3><b>Concept:</b> ${idea}<br><b>Synopsis:</b> ${getRandom(moviePlots)}`;
+    }
+
+    let imageSeed = Math.floor(Math.random() * 99999);
+    let imageUrl = `https://image.pollinations.ai/p/${encodeURIComponent(idea + ", anime style")}?width=500&height=500&seed=${imageSeed}&nologo=true`;
+
+    // Render layout with a download button built in
+    outputEl.innerHTML = `
+        ${payload}<br><br>
+        <img class="gen-image" src="${imageUrl}" alt="Visual"><br>
+        <button class="download-btn" onclick="downloadAsset('${imageUrl}', '${type}')">💾 Download Illustration</button>
+    `;
+
+    saveToStorage(type, idea, payload, imageUrl);
+}
+
+// 🔒 THE PREMIUM GATE ROUTINE
+window.downloadAsset = async function(url, filenamePrefix) {
+    if (!isPremiumUser) {
+         alert("💎 Premium Feature: Upgrading to AnimeVerse PRO is required to download assets natively!");
+         switchTab('pro-page', document.querySelectorAll('.nav-item')[3]); // Directs them straight to your Pro tab
+         return;
+    }
+
+    try {
+        // Fetching the image link directly as a blob file download
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const fileUrl = window.URL.createObjectURL(blob);
+        
+        const tempLink = document.createElement('a');
+        tempLink.href = fileUrl;
+        tempLink.download = `${filenamePrefix}_artwork.jpg`;
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+    } catch (err) {
+        alert("Could not process download directly due to browser sandboxing, try right clicking the image instead!");
+    }
+}
+
+// 💎 SIMULATE GOING PRO
+window.simulateUpgrade = function() {
+    localStorage.setItem("animeVerse_premium", "true");
+    activatePremiumUI();
+    alert("Success! Your Profile Matrix has been upgraded to PRO tier.");
+    switchTab('home-page', document.querySelectorAll('.nav-item')[0]);
+}
+
+function activatePremiumUI() {
+    isPremiumUser = true;
+    document.getElementById("statsCount").parentNode.insertAdjacentHTML('afterend', '<p><b>Account Level:</b> <span style="color:gold; font-weight:bold;">✨ PRO TIER ACTIVE</span></p>');
+    
+    // Change profile text elements dynamically
+    let profileBox = document.querySelector(".profile-box p");
+    if(profileBox) profileBox.innerHTML = `<b>Tier Class:</b> Premium Member`;
+}
+
+// 💾 STORAGE ENGINE
+function saveToStorage(category, userIdea, textHtml, imgUrl) {
+    let currentArchive = JSON.parse(localStorage.getItem("animeVerse_library")) || [];
+    let timestamp = new Date().toLocaleTimeString();
+    
+    currentArchive.unshift({ category, userIdea, textHtml, imgUrl, timestamp });
+    localStorage.setItem("animeVerse_library", JSON.stringify(currentArchive));
+    
+    renderLibrary();
+}
+
+function renderLibrary() {
+    let currentArchive = JSON.parse(localStorage.getItem("animeVerse_library")) || [];
+    let container = document.getElementById("libraryContainer");
+    document.getElementById("statsCount").innerText = currentArchive.length;
+
+    if (currentArchive.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-muted);">No entries archived yet.</p>`;
+        return;
+    }
+
+    container.innerHTML = "";
+    currentArchive.forEach(item => {
+        container.innerHTML += `
+            <div class="saved-item">
+                <small style="color: var(--accent-orange)">[${item.category.toUpperCase()} - ${item.timestamp}]</small>
+                <p><b>Prompt Input:</b> "${item.userIdea}"</p>
+                <div>${item.textHtml}</div>
+                <img src="${item.imgUrl}" class="gen-image" style="max-width:200px; margin-top:10px;"><br>
+                <button class="download-btn" onclick="downloadAsset('${item.imgUrl}', '${item.category}')">💾 Download</button>
+            </div>
+        `;
+    });
 }
 </script>
+    <script>
+// Mock data pools for generation fallback
+const charNames = ["Ren Hikari", "Kaelen Vex", "Sora Amamiya", "Asuka Kurogane"];
+const charPowers = ["Absolute Umbral manipulation", "Quantum Accelerating Fire Magic", "Starlight Weaver"];
+const charBackstories = ["was raised by an exiled clan in hiding.", "accidentally absorbed a forbidden artifact.", "woke up in an ancient ruin with no memories."];
+
+const worldNames = ["Neo-Aethelgard", "Zephyrus Prime", "The Obsidian Expanse"];
+const worldGeographies = ["A massive chain of floating landmasses.", "An endless landscape of bioluminescent mechanical forests."];
+
+const movieTitles = ["Wings of Retribution: Broken Sky", "The Last Alchemist: Shadow Legacy"];
+const moviePlots = ["A reluctant crew must pull off a dangerous heist against an emperor.", "When a massive rift opens in the sky, an estranged master must seal it."];
+
+// State variables
+let isPremiumUser = false; 
+
+// Load saved account session on boot up
+document.addEventListener("DOMContentLoaded", () => {
+    let savedUser = localStorage.getItem("animeVerse_user");
+    if (savedUser) {
+        initializeDashboard(savedUser);
+    }
+    
+    // Check if they were already premium from a past session
+    if (localStorage.getItem("animeVerse_premium") === "true") {
+        activatePremiumUI();
+    }
+});
+
+function handleLogin() {
+    let name = document.getElementById("usernameInput").value.trim();
+    if (!name) return alert("Please enter a valid username!");
+    
+    localStorage.setItem("animeVerse_user", name);
+    initializeDashboard(name);
+}
+
+function handleLogout() {
+    localStorage.removeItem("animeVerse_user");
+    localStorage.removeItem("animeVerse_premium");
+    isPremiumUser = false;
+    document.getElementById("login-gate").style.display = "flex";
+}
+
+function initializeDashboard(username) {
+    document.getElementById("login-gate").style.display = "none";
+    document.getElementById("welcomeName").innerText = username;
+    document.getElementById("matrixUsername").innerText = username;
+    
+    renderLibrary();
+}
+
+// 🔀 NAVIGATION LINK CONTROLLER
+function switchTab(pageId, element) {
+    document.querySelectorAll('.dashboard-page').forEach(page => page.classList.remove('active-page'));
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    
+    document.getElementById(pageId).classList.add('active-page');
+    element.classList.add('active');
+}
+
+function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// 🎰 SYSTEM GENERATOR
+function runGeneration(type) {
+    let idea = document.getElementById(`${type}Input`).value.trim();
+    if (!idea) return alert("Please enter a prompt first!");
+
+    let outputEl = document.getElementById(`${type}Output`);
+    outputEl.style.display = "block";
+
+    let payload = "";
+    if (type === 'character') {
+        let name = getRandom(charNames);
+        payload = `<h3>🎭 Character Profile: ${name}</h3><b>Concept:</b> ${idea}<br><b>Powers:</b> ${getRandom(charPowers)}<br><b>Story:</b> ${name} ${getRandom(charBackstories)}`;
+    } else if (type === 'world') {
+        let wName = getRandom(worldNames);
+        payload = `<h3>🌍 Realm Codex: ${wName}</h3><b>Concept:</b> ${idea}<br><b>Geography:</b> ${getRandom(worldGeographies)}`;
+    } else {
+        let title = getRandom(movieTitles);
+        payload = `<h3>🎬 Film Production Sheet: ${title}</h3><b>Concept:</b> ${idea}<br><b>Synopsis:</b> ${getRandom(moviePlots)}`;
+    }
+
+    let imageSeed = Math.floor(Math.random() * 99999);
+    let imageUrl = `https://image.pollinations.ai/p/${encodeURIComponent(idea + ", anime style")}?width=500&height=500&seed=${imageSeed}&nologo=true`;
+
+    // Render layout with a download button built in
+    outputEl.innerHTML = `
+        ${payload}<br><br>
+        <img class="gen-image" src="${imageUrl}" alt="Visual"><br>
+        <button class="download-btn" onclick="downloadAsset('${imageUrl}', '${type}')">💾 Download Illustration</button>
+    `;
+
+    saveToStorage(type, idea, payload, imageUrl);
+}
+
+// 🔒 THE PREMIUM GATE ROUTINE
+window.downloadAsset = async function(url, filenamePrefix) {
+    if (!isPremiumUser) {
+         alert("💎 Premium Feature: Upgrading to AnimeVerse PRO is required to download assets natively!");
+         switchTab('pro-page', document.querySelectorAll('.nav-item')[3]); // Directs them straight to your Pro tab
+         return;
+    }
+
+    try {
+        // Fetching the image link directly as a blob file download
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const fileUrl = window.URL.createObjectURL(blob);
+        
+        const tempLink = document.createElement('a');
+        tempLink.href = fileUrl;
+        tempLink.download = `${filenamePrefix}_artwork.jpg`;
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+    } catch (err) {
+        alert("Could not process download directly due to browser sandboxing, try right clicking the image instead!");
+    }
+}
+
+// 💎 SIMULATE GOING PRO
+window.simulateUpgrade = function() {
+    localStorage.setItem("animeVerse_premium", "true");
+    activatePremiumUI();
+    alert("Success! Your Profile Matrix has been upgraded to PRO tier.");
+    switchTab('home-page', document.querySelectorAll('.nav-item')[0]);
+}
+
+function activatePremiumUI() {
+    isPremiumUser = true;
+    document.getElementById("statsCount").parentNode.insertAdjacentHTML('afterend', '<p><b>Account Level:</b> <span style="color:gold; font-weight:bold;">✨ PRO TIER ACTIVE</span></p>');
+    
+    // Change profile text elements dynamically
+    let profileBox = document.querySelector(".profile-box p");
+    if(profileBox) profileBox.innerHTML = `<b>Tier Class:</b> Premium Member`;
+}
+
+// 💾 STORAGE ENGINE
+function saveToStorage(category, userIdea, textHtml, imgUrl) {
+    let currentArchive = JSON.parse(localStorage.getItem("animeVerse_library")) || [];
+    let timestamp = new Date().toLocaleTimeString();
+    
+    currentArchive.unshift({ category, userIdea, textHtml, imgUrl, timestamp });
+    localStorage.setItem("animeVerse_library", JSON.stringify(currentArchive));
+    
+    renderLibrary();
+}
+
+function renderLibrary() {
+    let currentArchive = JSON.parse(localStorage.getItem("animeVerse_library")) || [];
+    let container = document.getElementById("libraryContainer");
+    document.getElementById("statsCount").innerText = currentArchive.length;
+
+    if (currentArchive.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-muted);">No entries archived yet.</p>`;
+        return;
+    }
+
+    container.innerHTML = "";
+    currentArchive.forEach(item => {
+        container.innerHTML += `
+            <div class="saved-item">
+                <small style="color: var(--accent-orange)">[${item.category.toUpperCase()} - ${item.timestamp}]</small>
+                <p><b>Prompt Input:</b> "${item.userIdea}"</p>
+                <div>${item.textHtml}</div>
+                <img src="${item.imgUrl}" class="gen-image" style="max-width:200px; margin-top:10px;"><br>
+                <button class="download-btn" onclick="downloadAsset('${item.imgUrl}', '${item.category}')">💾 Download</button>
+            </div>
+        `;
+    });
+}
+                                    </script>
+    
 
 </body>
 </html>
