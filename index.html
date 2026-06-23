@@ -56,6 +56,7 @@ border:none;
 border-radius:10px;
 margin-top:10px;
 margin-bottom:10px;
+box-sizing: border-box; /* Ensures padding doesn't overflow the card */
 }
 
 button{
@@ -144,42 +145,36 @@ AI AnimeVerse © 2026
 
 <script>
 function characterGen(){
-
-let idea=document.getElementById("characterInput").value;
-
-document.getElementById("characterOutput").innerHTML=
-`
-<b>Name:</b> ${idea}<br><br>
-
-<b>Powers:</b> Legendary Anime Ability<br><br>
-
-<b>Story:</b>
-${idea} was born during a rare celestial event and now seeks to unlock their true destiny while battling powerful enemies across the world.
-`;
-    }
-function worldGen(){
-
-let idea=document.getElementById("worldInput").value;
-
-document.getElementById("worldOutput").innerHTML=
-`
-<b>World:</b> ${idea}<br><br>
-
-A magical realm filled with ancient ruins, powerful kingdoms, hidden dragons and mysterious energy that shapes the fate of all living beings.
-`;
-    }
-function movieGen(){
-
-let idea=document.getElementById("movieInput").value;
-
-document.getElementById("movieOutput").innerHTML=
-`
-<b>Title:</b> ${idea}<br><br>
-
-A legendary adventure where heroes must unite to stop a growing darkness before it consumes the entire world.
-`;
-    }
-    b
-
+    let idea = document.getElementById("characterInput").value;
+    if(!idea) return alert("Please enter a character prompt!");
     
+    document.getElementById("characterOutput").innerHTML = `
+        <b>Name:</b> ${idea}<br><br>
+        <b>Powers:</b> Legendary Anime Ability<br><br>
+        <b>Story:</b> ${idea} was born during a rare celestial event and now seeks to unlock their true destiny while battling powerful enemies across the world.
+    `;
+}
 
+function worldGen(){
+    let idea = document.getElementById("worldInput").value;
+    if(!idea) return alert("Please enter a world prompt!");
+    
+    document.getElementById("worldOutput").innerHTML = `
+        <b>World:</b> ${idea}<br><br>
+        A magical realm filled with ancient ruins, powerful kingdoms, hidden dragons and mysterious energy that shapes the fate of all living beings.
+    `;
+}
+
+function movieGen(){
+    let idea = document.getElementById("movieInput").value;
+    if(!idea) return alert("Please enter a movie prompt!");
+    
+    document.getElementById("movieOutput").innerHTML = `
+        <b>Title:</b> ${idea}<br><br>
+        A legendary adventure where heroes must unite to stop a growing darkness before it consumes the entire world.
+    `;
+}
+</script>
+
+</body>
+</html>
