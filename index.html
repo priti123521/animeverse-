@@ -80,6 +80,17 @@ background:#22222d;
 border-radius:10px;
 }
 
+/* Image styling */
+.gen-image {
+width: 100%;
+max-width: 400px;
+border-radius: 10px;
+margin-top: 15px;
+display: block;
+box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+background: #111;
+}
+
 .premium{
 background:linear-gradient(135deg,#ffd700,#ff8c00);
 color:black;
@@ -103,7 +114,7 @@ color:#999;
 
 <section class="hero">
 <h1>Create Your Own Anime Universe</h1>
-<p>Generate characters, fantasy worlds and movie ideas.</p>
+<p>Generate characters, fantasy worlds and movie ideas with AI visuals.</p>
 </section>
 
 <div class="container">
@@ -112,28 +123,28 @@ color:#999;
 <h2>🎨 Anime Character Generator</h2>
 <input id="characterInput" placeholder="Example: Ice princess with dragon powers">
 <button onclick="characterGen()">Generate Character</button>
-<div id="characterOutput" class="result"></div>
+<div id="characterOutput" class="result" style="display:none;"></div>
 </div>
 
 <div class="card">
 <h2>🌍 Fantasy World Generator</h2>
 <input id="worldInput" placeholder="Example: Floating islands above an endless ocean">
 <button onclick="worldGen()">Generate World</button>
-<div id="worldOutput" class="result"></div>
+<div id="worldOutput" class="result" style="display:none;"></div>
 </div>
 
 <div class="card">
 <h2>🎬 Anime Movie Generator</h2>
 <input id="movieInput" placeholder="Example: Last samurai fighting ancient gods">
 <button onclick="movieGen()">Generate Movie</button>
-<div id="movieOutput" class="result"></div>
+<div id="movieOutput" class="result" style="display:none;"></div>
 </div>
 
 <div class="card premium">
 <h2>💎 Premium Features</h2>
-<p>AI Anime Images</p>
-<p>Unlimited Generations</p>
-<p>Exclusive Anime Worlds</p>
+<p>HD Uncapped Generations</p>
+<p>Custom Fine-tuned Art Styles</p>
+<p>Save Characters to Deck</p>
 <p>Coming Soon</p>
 </div>
 
@@ -144,7 +155,6 @@ AI AnimeVerse © 2026
 </footer>
 
 <script>
-// Randomization pools to make outcomes dynamic
 const powers = [
     "Temporal Rewind & Chrono-Blades", "Shadow Necromancy", "Celestial Star-Summoning", 
     "Absolute Zero Cryomancy", "Void Alteration", "Cursed Flame Manifestation", 
@@ -172,7 +182,6 @@ const moviePlots = [
     "An ancient, mechanical deity awakens from a thousand-year slumber, forcing rival nations to form an uneasy alliance."
 ];
 
-// Helper function to pick a random item from an array
 function getRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -184,10 +193,18 @@ function characterGen(){
     let randomPower = getRandom(powers);
     let randomStory = getRandom(backstories);
     
-    document.getElementById("characterOutput").innerHTML = `
+    // Create an optimized image prompt targeting anime style
+    let imagePrompt = encodeURIComponent(`anime style portrait of ${idea}, master of ${randomPower}, highly detailed, vibrant colors, key visual`);
+    let imageUrl = `https://image.pollinations.ai/p/${imagePrompt}?width=500&height=500&seed=${Math.floor(Math.random() * 10000)}&nologo=true`;
+
+    let outputDiv = document.getElementById("characterOutput");
+    outputDiv.style.display = "block";
+    outputDiv.innerHTML = `
         <b>Concept:</b> ${idea}<br><br>
         <b>Powers:</b> ${randomPower}<br><br>
-        <b>Story:</b> The character ${randomStory}
+        <b>Story:</b> The character ${randomStory}<br><br>
+        <b>AI Visual representation:</b><br>
+        <img class="gen-image" src="${imageUrl}" alt="Generating character artwork...">
     `;
 }
 
@@ -197,9 +214,16 @@ function worldGen(){
     
     let randomTheme = getRandom(worldThemes);
     
-    document.getElementById("worldOutput").innerHTML = `
+    let imagePrompt = encodeURIComponent(`anime background landscape scenery, ${idea}, ${randomTheme}, majestic cinematic lighting, makoto shinkai style`);
+    let imageUrl = `https://image.pollinations.ai/p/${imagePrompt}?width=600&height=400&seed=${Math.floor(Math.random() * 10000)}&nologo=true`;
+
+    let outputDiv = document.getElementById("worldOutput");
+    outputDiv.style.display = "block";
+    outputDiv.innerHTML = `
         <b>World Core:</b> ${idea}<br><br>
-        <b>Lore:</b> A breathtaking realm ${randomTheme}
+        <b>Lore:</b> A breathtaking realm ${randomTheme}<br><br>
+        <b>AI Environment Concept:</b><br>
+        <img class="gen-image" src="${imageUrl}" alt="Generating world concept artwork...">
     `;
 }
 
@@ -209,9 +233,16 @@ function movieGen(){
     
     let randomPlot = getRandom(moviePlots);
     
-    document.getElementById("movieOutput").innerHTML = `
+    let imagePrompt = encodeURIComponent(`anime movie poster style, dramatic composition, ${idea}, action fantasy, official cinematic illustration`);
+    let imageUrl = `https://image.pollinations.ai/p/${imagePrompt}?width=500&height=600&seed=${Math.floor(Math.random() * 10000)}&nologo=true`;
+
+    let outputDiv = document.getElementById("movieOutput");
+    outputDiv.style.display = "block";
+    outputDiv.innerHTML = `
         <b>Title Idea:</b> ${idea}<br><br>
-        <b>Synopsis:</b> ${randomPlot}
+        <b>Synopsis:</b> ${randomPlot}<br><br>
+        <b>AI Movie Poster:</b><br>
+        <img class="gen-image" src="${imageUrl}" alt="Generating movie poster...">
     `;
 }
 </script>
