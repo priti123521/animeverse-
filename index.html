@@ -1,21 +1,9 @@
-To transition this into a serious, modern application, we need to restructure your app into a **Single Page Application (SPA)** dashboard. Instead of just stacking cards, we will build a sleek left-hand sidebar navigation menu containing your new tabs (**Home**, **My Library**, **Profile**, and **Go Pro**).
-We will also upgrade your script to use **real live AI API connections**. Since you are testing this locally directly from an HTML file, we will plug in the official, completely free-tier client-side **Google Gemini API** (@google/generative-ai) to generate incredibly deep, custom anime lore in real time based on *exactly* what your user types, entirely replacing those random arrays!
-Here is your complete, production-ready **AI AnimeVerse v4.0** codebase. Replace your entire file with this:
-```html
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI AnimeVerse Dashboard v4.0</title>
-
-<script type="importmap">
-  {
-    "imports": {
-      "@google/generative-ai": "https://esm.run/@google/generative-ai"
-    }
-  }
-</script>
+<title>AI AnimeVerse Dashboard v4.5</title>
 
 <style>
 :root {
@@ -34,6 +22,28 @@ body {
     color: white;
     display: flex;
     min-height: 100vh;
+}
+
+/* --- LOGIN SCREEN GATE --- */
+#login-gate {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #060609;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 15px;
+    border: 1px solid #222;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
 }
 
 /* --- SIDEBAR NAVIGATION --- */
@@ -89,24 +99,16 @@ body {
 }
 
 .dashboard-page {
-    display: none; /* Pages hidden by default, toggled via JS */
+    display: none;
 }
 
 .dashboard-page.active-page {
     display: block;
 }
 
-h1 {
-    font-size: 36px;
-    margin-bottom: 5px;
-}
+h1 { font-size: 36px; margin-bottom: 5px; }
+.subtitle { color: var(--text-muted); margin-bottom: 30px; }
 
-.subtitle {
-    color: var(--text-muted);
-    margin-bottom: 30px;
-}
-
-/* --- CARD CAROUSEL / ROW GRID --- */
 .grid-layout {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -121,7 +123,6 @@ h1 {
     border: 1px solid #222;
 }
 
-/* --- FORM ELEMENTS --- */
 input {
     width: 100%;
     padding: 14px;
@@ -134,10 +135,7 @@ input {
     font-size: 15px;
 }
 
-input:focus {
-    border-color: var(--accent-orange);
-    outline: none;
-}
+input:focus { border-color: var(--accent-orange); outline: none; }
 
 button {
     background: linear-gradient(135deg, var(--accent-orange), #ff4500);
@@ -148,13 +146,10 @@ button {
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.1s, opacity 0.2s;
 }
 
-button:hover { opacity: 0.95; transform: translateY(-1px); }
-button:disabled { background: #444; cursor: not-allowed; }
+button:hover { opacity: 0.95; }
 
-/* --- OUTPUT DISPLAY --- */
 .result {
     margin-top: 20px;
     padding: 20px;
@@ -173,7 +168,6 @@ button:disabled { background: #444; cursor: not-allowed; }
     box-shadow: 0 8px 25px rgba(0,0,0,0.6);
 }
 
-/* --- SPECIFIC TABS STYLING --- */
 .premium-card {
     background: linear-gradient(135deg, #ffd700, #ffa500);
     color: black;
@@ -181,29 +175,29 @@ button:disabled { background: #444; cursor: not-allowed; }
     padding: 40px;
 }
 
-.premium-card button {
-    background: black;
-    color: #ffd700;
-    margin-top: 20px;
-}
-
-.library-grid, .profile-box {
-    background: var(--card-bg);
-    padding: 25px;
-    border-radius: 15px;
-}
+.premium-card button { background: black; color: #ffd700; margin-top: 20px; }
+.library-grid, .profile-box { background: var(--card-bg); padding: 25px; border-radius: 15px; }
 
 .saved-item {
     background: #1f1f2a;
     padding: 15px;
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border: 1px solid #333;
 }
 </style>
 </head>
 
 <body>
+
+<div id="login-gate">
+    <div class="login-box">
+        <h2 style="color: var(--accent-orange); margin-top:0;">Welcome to AnimeVerse</h2>
+        <p style="color: var(--text-muted);">Create your local developer profile matrix to access the generator deck.</p>
+        <input id="usernameInput" placeholder="Enter your custom Username">
+        <button onclick="handleLogin()">Initialize Account</button>
+    </div>
+</div>
 
 <nav class="sidebar">
     <div class="sidebar-header">🔥 AnimeVerse</div>
@@ -213,33 +207,36 @@ button:disabled { background: #444; cursor: not-allowed; }
         <li class="nav-item" onclick="switchTab('profile-page', this)">👤 Profile Matrix</li>
         <li class="nav-item" onclick="switchTab('pro-page', this)">💎 Go Pro</li>
     </ul>
+    <div style="padding: 20px; border-top: 1px solid #222;">
+        <button style="width:100%; background:#333;" onclick="handleLogout()">Log Out</button>
+    </div>
 </nav>
 
 <main class="main-content">
 
     <section id="home-page" class="dashboard-page active-page">
-        <h1>Anime Command Center</h1>
-        <p class="subtitle">Enter simple ideas below. Real-time neural AI handles the complete lore.</p>
+        <h1>Welcome Back, <span id="welcomeName" style="color:var(--accent-orange)">Weaver</span>!</h1>
+        <p class="subtitle">Select a module to build out elements of your custom universe framework.</p>
         
         <div class="grid-layout">
             <div class="card">
                 <h2>🎨 Character Forge</h2>
-                <input id="characterInput" placeholder="Ex: Cyborg samurai running from a dark past">
-                <button id="charBtn" onclick="runAiGeneration('character')">Forge Character</button>
+                <input id="characterInput" placeholder="Ex: A prince with shadow powers">
+                <button onclick="runGeneration('character')">Forge Character</button>
                 <div id="characterOutput" class="result" style="display:none;"></div>
             </div>
 
             <div class="card">
                 <h2>🌍 World Weaver</h2>
-                <input id="worldInput" placeholder="Ex: Cyberpunk village hidden inside a volcanic crater">
-                <button id="worldBtn" onclick="runAiGeneration('world')">Weave World</button>
+                <input id="worldInput" placeholder="Ex: A kingdom floating above the clouds">
+                <button onclick="runGeneration('world')">Weave World</button>
                 <div id="worldOutput" class="result" style="display:none;"></div>
             </div>
 
             <div class="card">
                 <h2>🎬 Script Engine</h2>
-                <input id="movieInput" placeholder="Ex: High school detective uncovers magical mech suits">
-                <button id="movieBtn" onclick="runAiGeneration('movie')">Pitch Film</button>
+                <input id="movieInput" placeholder="Ex: A dragon war between two empires">
+                <button onclick="runGeneration('movie')">Pitch Film</button>
                 <div id="movieOutput" class="result" style="display:none;"></div>
             </div>
         </div>
@@ -247,20 +244,18 @@ button:disabled { background: #444; cursor: not-allowed; }
 
     <section id="library-page" class="dashboard-page">
         <h1>My Archives</h1>
-        <p class="subtitle">Every character profile, realm codex, and movie script you create rolls directly into this database index.</p>
-        <div class="library-grid" id="libraryContainer">
-            <p style="color: var(--text-muted);">No entries archived yet. Run a generator from Home to save a creation!</p>
-        </div>
+        <p class="subtitle">Every character profile, realm codex, and movie script you create is saved safely in local storage.</p>
+        <div class="library-grid" id="libraryContainer"></div>
     </section>
 
     <section id="profile-page" class="dashboard-page">
         <h1>Profile Matrix</h1>
-        <p class="subtitle">Manage user permissions and generation metrics.</p>
+        <p class="subtitle">Real-time usage analytics associated with this machine.</p>
         <div class="profile-box">
-            <h3>User Identity: <span style="color: var(--accent-orange)">AnimeWeaver #4901</span></h3>
+            <h3>User Identity: <span id="matrixUsername" style="color: var(--accent-orange)">-</span></h3>
             <p><b>Tier Class:</b> Standard Free Account</p>
-            <p><b>API Call Limit:</b> Capped at 15 daily requests</p>
-            <p><b>Current Account Status:</b> Active Operational</p>
+            <p><b>Total Creations Compiled:</b> <span id="statsCount" style="color:var(--accent-orange); font-weight:bold;">0</span></p>
+            <p><b>Storage Allocation:</b> Browser LocalStorage Enabled</p>
         </div>
     </section>
 
@@ -272,24 +267,55 @@ button:disabled { background: #444; cursor: not-allowed; }
             <p>Uncapped real-time AI Generation speeds</p>
             <p>Access high-fidelity descriptive writing presets</p>
             <p>Download generated illustrations natively</p>
-            <button onclick="alert('Stripe Integration Payment Gate Coming Soon!')">Upgrade for $9.99/mo</button>
+            <button onclick="alert('Stripe Payments coming in version 5.0!')">Upgrade for $9.99/mo</button>
         </div>
     </section>
 
 </main>
 
-<script type="module">
-import { GoogleGenerativeAI } from "@google/generative-ai";
+<script>
+// Mock data pools for generation fallback
+const charNames = ["Ren Hikari", "Kaelen Vex", "Sora Amamiya", "Asuka Kurogane"];
+const charPowers = ["Absolute Umbral manipulation", "Quantum Accelerating Fire Magic", "Starlight Weaver"];
+const charBackstories = ["was raised by an exiled clan in hiding.", "accidentally absorbed a forbidden artifact.", "woke up in an ancient ruin with no memories."];
 
-// ⚠️ FREE API DEMO KEY: This is an unbilled open-tier evaluation key. 
-// For heavy production, swap this out with your custom secure console key.
-const API_KEY = "AIzaSyD-unbilled-demo-key-placeholder"; 
+const worldNames = ["Neo-Aethelgard", "Zephyrus Prime", "The Obsidian Expanse"];
+const worldGeographies = ["A massive chain of floating landmasses.", "An endless landscape of bioluminescent mechanical forests."];
 
-// Active memory store for library tracking
-let libraryArchive = [];
+const movieTitles = ["Wings of Retribution: Broken Sky", "The Last Alchemist: Shadow Legacy"];
+const moviePlots = ["A reluctant crew must pull off a dangerous heist against an emperor.", "When a massive rift opens in the sky, an estranged master must seal it."];
+
+// Load saved account session on boot up
+document.addEventListener("DOMContentLoaded", () => {
+    let savedUser = localStorage.getItem("animeVerse_user");
+    if (savedUser) {
+        initializeDashboard(savedUser);
+    }
+});
+
+function handleLogin() {
+    let name = document.getElementById("usernameInput").value.trim();
+    if (!name) return alert("Please enter a valid username!");
+    
+    localStorage.setItem("animeVerse_user", name);
+    initializeDashboard(name);
+}
+
+function handleLogout() {
+    localStorage.removeItem("animeVerse_user");
+    document.getElementById("login-gate").style.display = "flex";
+}
+
+function initializeDashboard(username) {
+    document.getElementById("login-gate").style.display = "none";
+    document.getElementById("welcomeName").innerText = username;
+    document.getElementById("matrixUsername").innerText = username;
+    
+    renderLibrary();
+}
 
 // 🔀 NAVIGATION LINK CONTROLLER
-window.switchTab = function(pageId, element) {
+function switchTab(pageId, element) {
     document.querySelectorAll('.dashboard-page').forEach(page => page.classList.remove('active-page'));
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
     
@@ -297,120 +323,71 @@ window.switchTab = function(pageId, element) {
     element.classList.add('active');
 }
 
-// 🤖 MAIN BRAIN: LIVE BACKEND API GENERATION PROCESSOR
-window.runAiGeneration = async function(type) {
-    let inputEl = document.getElementById(`${type}Input`);
-    let outputEl = document.getElementById(`${type}Output`);
-    let btnEl = document.getElementById(`${type}Btn`);
-    let ideaStr = inputEl.value.trim();
-
-    if (!ideaStr) return alert("Please specify an introductory concept outline first.");
-
-    // Enter UI loading states
-    btnEl.disabled = true;
-    btnEl.innerText = "Processing Lore via AI...";
-    outputEl.style.display = "block";
-    outputEl.innerHTML = "<i>Connecting with the AI Network to frame variables... Just a moment.</i>";
-
-    try {
-        let systemRulePrompt = "";
-        
-        // Define contextual formats depending on layout type
-        if (type === 'character') {
-            systemRulePrompt = `You are a professional anime designer. Given the character concept "${ideaStr}", generate an amazing character profile in EXACTLY this HTML format:
-            <h3>🎭 Character Profile</h3>
-            <b>Name:</b> [Invent an epic anime name]<br>
-            <b>Age:</b> [Assign logical age]<br>
-            <b>Appearance:</b> [Detailed description]<br><br>
-            <b>Powers & Abilities:</b> [Creative anime ability details]<br>
-            <b>Personality:</b> [Complex profile notes]<br>
-            <b>Critical Weakness:</b> [Intense functional trade-off]<br><br>
-            <b>Backstory:</b> [A detailed, engaging 3-sentence origin arc relating to "${ideaStr}"]`;
-        } else if (type === 'world') {
-            systemRulePrompt = `You are an anime worldbuilder. Given the idea "${ideaStr}", generate an epic world codex in EXACTLY this HTML format:
-            <h3>🌍 Realm Codex</h3>
-            <b>World Name:</b> [Invent a sci-fi/fantasy realm name]<br>
-            <b>Geography:</b> [Describe landscapes]<br>
-            <b>Magic System:</b> [Explain laws of supernatural/science energy]<br><br>
-            <b>Factions:</b> [Name two opposing groups and their goals]<br>
-            <b>Creatures:</b> [List 2 unique beast species native here]<br><br>
-            <b>History:</b> [A highly detailed 3-sentence paragraph on how this place evolved based on "${ideaStr}"]`;
-        } else {
-            systemRulePrompt = `You are an anime director. Given the prompt "${ideaStr}", generate a feature film pitch in EXACTLY this HTML format:
-            <h3>🎬 Film Production Sheet</h3>
-            <b>Title:</b> [Epic movie title]<br>
-            <b>Synopsis:</b> [Compelling movie synopsis based on "${ideaStr}"]<br><br>
-            <b>Main Characters & Villain:</b> [Short summary list of major actors]<br>
-            <b>Plot Twists:</b> [One radical narrative shift event]<br>
-            <b>Ending Resolution:</b> [How the saga wraps up dramatic conclusion]`;
-        }
-
-        // Initialize connection with Gemini Model (Or graceful fallback if key is blocked)
-        let aiText = "";
-        try {
-            const aiInstance = new GoogleGenerativeAI(API_KEY);
-            const modelInstance = aiInstance.getGenerativeModel({ model: "gemini-1.5-flash" });
-            const promptExecution = await modelInstance.generateContent(systemRulePrompt);
-            aiText = promptExecution.response.text();
-        } catch(apiErr) {
-            // High quality local simulator fallback if connection or key fails during sandboxed viewing
-            aiText = generateLocalFallback(type, ideaStr);
-        }
-
-        // Handle Image rendering concurrently using Pollinations engine API
-        let imageSeed = Math.floor(Math.random() * 99999);
-        let stylizedImageTerm = type === 'character' ? 'anime key visual character portrait master illustration' : type === 'world' ? 'anime background scenery concept wallpaper shinkai style' : 'anime movie poster cinematic key illustration artwork';
-        let imageUrl = `https://image.pollinations.ai/p/${encodeURIComponent(ideaStr + ", " + stylizedImageTerm)}?width=500&height=500&seed=${imageSeed}&nologo=true`;
-
-        // Render full generated package directly to UI view block
-        let constructedPayload = `
-            ${aiText}
-            <br><br>
-            <b>AI Dynamic Visual Asset:</b><br>
-            <img class="gen-image" src="${imageUrl}" alt="Visualizing Asset...">
-        `;
-
-        outputEl.innerHTML = constructedPayload;
-
-        // Automatically write data block down into "My Library" archive stack
-        archiveToLibrary(type, ideaStr, aiText);
-
-    } catch (criticalErr) {
-        outputEl.innerHTML = `<b style='color:red;'>Generation Breakdown Error:</b> ${criticalErr.message}`;
-    } finally {
-        btnEl.disabled = false;
-        btnEl.innerText = type === 'character' ? "Forge Character" : type === 'world' ? "Weave World" : "Pitch Film";
-    }
+function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// 📦 STORAGE ROUTINE: Commits generated outputs to Library tab
-function archiveToLibrary(category, userIdea, generatedText) {
-    let dateStr = new Date().toLocaleTimeString();
-    libraryArchive.unshift({ category, userIdea, text: generatedText, timestamp: dateStr });
+// 🎰 CORE SYSTEM GENERATOR
+function runGeneration(type) {
+    let idea = document.getElementById(`${type}Input`).value.trim();
+    if (!idea) return alert("Please enter a prompt first!");
+
+    let outputEl = document.getElementById(`${type}Output`);
+    outputEl.style.display = "block";
+
+    let payload = "";
+    if (type === 'character') {
+        let name = getRandom(charNames);
+        payload = `<h3>🎭 Character Profile: ${name}</h3><b>Concept:</b> ${idea}<br><b>Powers:</b> ${getRandom(charPowers)}<br><b>Story:</b> ${name} ${getRandom(charBackstories)}`;
+    } else if (type === 'world') {
+        let wName = getRandom(worldNames);
+        payload = `<h3>🌍 Realm Codex: ${wName}</h3><b>Concept:</b> ${idea}<br><b>Geography:</b> ${getRandom(worldGeographies)}`;
+    } else {
+        let title = getRandom(movieTitles);
+        payload = `<h3>🎬 Film Production Sheet: ${title}</h3><b>Concept:</b> ${idea}<br><b>Synopsis:</b> ${getRandom(moviePlots)}`;
+    }
+
+    let imageSeed = Math.floor(Math.random() * 99999);
+    let imageUrl = `https://image.pollinations.ai/p/${encodeURIComponent(idea + ", anime style")}?width=500&height=500&seed=${imageSeed}&nologo=true`;
+
+    outputEl.innerHTML = `${payload}<br><br><img class="gen-image" src="${imageUrl}" alt="Visual">`;
+
+    // Save item directly to the permanent archive storage
+    saveToStorage(type, idea, payload, imageUrl);
+}
+
+// 💾 LOCALSTORAGE DATABASE SYSTEM
+function saveToStorage(category, userIdea, textHtml, imgUrl) {
+    let currentArchive = JSON.parse(localStorage.getItem("animeVerse_library")) || [];
+    let timestamp = new Date().toLocaleTimeString();
     
-    let libraryContainer = document.getElementById("libraryContainer");
-    libraryContainer.innerHTML = ""; // Wipe blank state message
+    currentArchive.unshift({ category, userIdea, textHtml, imgUrl, timestamp });
+    localStorage.setItem("animeVerse_library", JSON.stringify(currentArchive));
     
-    libraryArchive.forEach(item => {
-        libraryContainer.innerHTML += `
+    renderLibrary();
+}
+
+function renderLibrary() {
+    let currentArchive = JSON.parse(localStorage.getItem("animeVerse_library")) || [];
+    let container = document.getElementById("libraryContainer");
+    document.getElementById("statsCount").innerText = currentArchive.length;
+
+    if (currentArchive.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-muted);">No entries archived yet.</p>`;
+        return;
+    }
+
+    container.innerHTML = "";
+    currentArchive.forEach(item => {
+        container.innerHTML += `
             <div class="saved-item">
-                <small style="color: var(--accent-orange)">[${item.category.toUpperCase()} - Saved at ${item.timestamp}]</small>
-                <p><b>Prompt Concept:</b> "${item.userIdea}"</p>
-                <div>${item.text}</div>
+                <small style="color: var(--accent-orange)">[${item.category.toUpperCase()} - ${item.timestamp}]</small>
+                <p><b>Prompt Input:</b> "${item.userIdea}"</p>
+                <div>${item.textHtml}</div>
+                <img src="${item.imgUrl}" class="gen-image" style="max-width:200px; margin-top:10px;">
             </div>
         `;
     });
-}
-
-// 🛠️ FAILSAFE RECOVERY: Keeps the experience active if browser blocks external scripts
-function generateLocalFallback(type, prompt) {
-    if(type === 'character') {
-        return `<h3>🎭 Character Profile (Local Core Engine)</h3><b>Name:</b> Chrono Vanguard Alpha<br><b>Age:</b> 19 years old<br><b>Appearance:</b> Razor spiky hair, wearing dark trench techarmor.<br><br><b>Powers & Abilities:</b> Control over localized dark matter fields.<br><b>Personality:</b> Calculated, protective, quiet but deadly.<br><b>Critical Weakness:</b> Burns out completely if exposed to high electrical EMP currents.<br><br><b>Backstory:</b> Following the absolute dynamic blueprint of "${prompt}", they were built inside an underground chamber to fight an encroaching planetary disaster.`;
-    }
-    if(type === 'world') {
-        return `<h3>🌍 Realm Codex (Local Core Engine)</h3><b>World Name:</b> Neo-Vanaheim Helix<br><b>Geography:</b> Vertical crystal cliffs intersecting glowing thermal lines.<br><b>Magic System:</b> Mana circuitry flowing directly through structural rocks.<br><br><b>Factions:</b> Sky Guardians vs subterranean rebels.<br><b>Creatures:</b> Solar Drakes and Quartz Golems.<br><br><b>History:</b> The balance shifts constantly after "${prompt}" emerged as the ancient historical fulcrum.`;
-    }
-    return `<h3>🎬 Film Production Sheet (Local Core Engine)</h3><b>Title:</b> "${prompt}: Paradigm Zero"<br><b>Synopsis:</b> An epic cinematic adaptation exploring the fallout of hidden worlds clash.<br><br><b>Main Characters & Villain:</b> Commander Kai vs Emperor Vex.<br><b>Plot Twists:</b> The safe zone was a simulated prison all along.<br><b>Ending Resolution:</b> The core shuts down, leading to structural freedom for humanity.`;
 }
 </script>
 
