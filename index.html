@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI AnimeVerse Dashboard v5.0</title>
+<title>AI AnimeVerse Dashboard v5.1 (Fixed)</title>
 
 <style>
 :root {
@@ -24,50 +24,7 @@ body {
     min-height: 100vh;
 }
 
-/* --- THE PREMIUM DOWNLOAD BUTTON --- */
-.download-btn {
-    background: #222;
-    color: #fff;
-    border: 1px solid #444;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    margin-top: 10px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: background 0.2s;
-}
-
-.download-btn:hover {
-    background: #333;
-    border-color: var(--accent-orange);
-}
-
-/* --- LOGIN SCREEN GATE --- */
-#login-gate {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #060609;
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-box {
-    background: var(--card-bg);
-    padding: 40px;
-    border-radius: 15px;
-    border: 1px solid #222;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-}
-
-/* --- SIDEBAR NAVIGATION --- */
+/* SIDEBAR */
 .sidebar {
     width: var(--sidebar-width);
     background: #0f0f15;
@@ -85,25 +42,12 @@ body {
     background: linear-gradient(90deg, var(--accent-orange), var(--accent-red));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    border-bottom: 1px solid #1a1a24;
-}
-
-.nav-links {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
-    flex-grow: 1;
-    overflow-y: auto;
 }
 
 .nav-item {
     padding: 13px 20px;
-    display: flex;
-    align-items: center;
     color: var(--text-muted);
     cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
 }
 
 .nav-item:hover, .nav-item.active {
@@ -112,442 +56,247 @@ body {
     border-left: 4px solid var(--accent-orange);
 }
 
-/* --- MAIN DASHBOARD LAYOUT --- */
+/* MAIN */
 .main-content {
     margin-left: var(--sidebar-width);
     flex-grow: 1;
-    padding: 40px;
-    box-sizing: border-box;
+    padding: 30px;
 }
 
-.dashboard-page {
-    display: none;
-}
-
-.dashboard-page.active-page {
-    display: block;
-}
-
-h1 { font-size: 36px; margin-bottom: 5px; }
-.subtitle { color: var(--text-muted); margin-bottom: 30px; }
-
-.grid-layout {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-}
+.dashboard-page { display: none; }
+.dashboard-page.active-page { display: block; }
 
 .card {
     background: var(--card-bg);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 12px;
     border: 1px solid #222;
 }
 
 input {
     width: 100%;
-    padding: 14px;
-    border: 1px solid #333;
-    background: #111116;
+    padding: 12px;
+    background: #111;
     color: white;
-    border-radius: 10px;
-    margin: 15px 0;
-    box-sizing: border-box;
-    font-size: 15px;
+    border: 1px solid #333;
+    border-radius: 8px;
 }
 
-input:focus { border-color: var(--accent-orange); outline: none; }
-
 button {
-    background: linear-gradient(135deg, var(--accent-orange), #ff4500);
-    color: white;
+    margin-top: 10px;
+    padding: 10px 18px;
     border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: bold;
+    border-radius: 8px;
+    background: var(--accent-orange);
+    color: white;
     cursor: pointer;
 }
 
-button:hover { opacity: 0.95; }
-
-.result {
-    margin-top: 20px;
-    padding: 20px;
-    background: #1d1d29;
-    border-radius: 10px;
-    border-left: 4px solid var(--accent-orange);
-    line-height: 1.6;
-}
+.result { margin-top: 15px; }
 
 .gen-image {
     width: 100%;
-    max-width: 450px;
     border-radius: 10px;
-    margin-top: 20px;
-    display: block;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    margin-top: 10px;
 }
 
-/* --- GALLERY DISPLAY GRID --- */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
-}
-.gallery-card {
-    background: var(--card-bg);
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #222;
-    position: relative;
-}
-.gallery-card img {
+/* LOGIN */
+#login-gate {
+    position: fixed;
     width: 100%;
-    height: 240px;
-    object-fit: cover;
-}
-.gallery-info {
-    padding: 12px;
-    font-size: 14px;
+    height: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
 }
 
-/* --- STREAMING TV GRID --- */
-.video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 25px;
-}
-.video-card {
+.login-box {
     background: var(--card-bg);
+    padding: 30px;
     border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #222;
-    cursor: pointer;
-}
-.video-card img { width: 100%; height: 160px; object-fit: cover; }
-.video-card:hover { border-color: var(--accent-orange); }
-
-/* --- PREMIUM INTERFACE --- */
-.premium-card {
-    background: linear-gradient(135deg, #ffd700, #ffa500);
-    color: black;
-    text-align: center;
-    padding: 40px;
-}
-.premium-card button { background: black; color: #ffd700; margin-top: 20px; }
-.library-grid, .profile-box { background: var(--card-bg); padding: 25px; border-radius: 15px; }
-
-.saved-item {
-    background: #1f1f2a;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #333;
+    width: 300px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔒 ACCOUNT SIGN-IN GATE -->
+<!-- LOGIN -->
 <div id="login-gate">
     <div class="login-box">
-        <h2 style="color: var(--accent-orange); margin-top:0;">Welcome to AnimeVerse</h2>
-        <p style="color: var(--text-muted);">Create your local developer profile matrix to access the deck.</p>
-        <input id="usernameInput" placeholder="Enter your custom Username">
-        <button onclick="handleLogin()">Initialize Account</button>
+        <h2>AnimeVerse Login</h2>
+        <input id="usernameInput" placeholder="Enter username">
+        <button onclick="handleLogin()">Enter</button>
     </div>
 </div>
 
-<!-- 🧭 EXPANDED SIDEBAR NAVIGATION -->
+<!-- SIDEBAR -->
 <nav class="sidebar">
     <div class="sidebar-header">🔥 AnimeVerse</div>
-    <ul class="nav-links">
-        <li class="nav-item active" onclick="switchTab('home-page', this)">🏠 Home</li>
-        <li class="nav-item" onclick="switchTab('character-page', this)">🎨 Character Forge</li>
-        <li class="nav-item" onclick="switchTab('world-page', this)">🌍 World Weaver</li>
-        <li class="nav-item" onclick="switchTab('movie-page', this)">🎬 Movie Studio</li>
-        <li class="nav-item" onclick="switchTab('gallery-page', this)">🖼️ Anime Gallery</li>
-        <li class="nav-item" onclick="switchTab('watch-page', this)">📺 Watch Anime</li>
-        <li class="nav-item" onclick="switchTab('library-page', this)">📚 My Library</li>
-        <li class="nav-item" onclick="switchTab('profile-page', this)">👤 Profile Matrix</li>
-        <li class="nav-item" onclick="switchTab('pro-page', this)">💎 AnimeVerse Pro</li>
-    </ul>
-    <div style="padding: 20px; border-top: 1px solid #222;">
-        <button style="width:100%; background:#333;" onclick="handleLogout()">Log Out</button>
-    </div>
+
+    <div class="nav-item active" data-page="home-page">🏠 Home</div>
+    <div class="nav-item" data-page="character-page">🎨 Character Forge</div>
+    <div class="nav-item" data-page="world-page">🌍 World</div>
+    <div class="nav-item" data-page="movie-page">🎬 Movie</div>
+    <div class="nav-item" data-page="gallery-page">🖼️ Gallery</div>
+    <div class="nav-item" data-page="watch-page">📺 Watch</div>
+    <div class="nav-item" data-page="library-page">📚 Library</div>
+    <div class="nav-item" data-page="profile-page">👤 Profile</div>
+    <div class="nav-item" data-page="pro-page">💎 Pro</div>
 </nav>
 
-<!-- 🖥️ MAIN ENGINE CONTENT -->
+<!-- MAIN -->
 <main class="main-content">
 
-    <!-- 🏠 HOME PAGE -->
-    <section id="home-page" class="dashboard-page active-page">
-        <h1>Welcome Back, <span id="welcomeName" style="color:var(--accent-orange)">Weaver</span>!</h1>
-        <p class="subtitle">Your ultimate creative anime generation platform and media headquarters.</p>
-        <div class="card" style="margin-bottom:25px;">
-            <h3>What's New in Version 5.0?</h3>
-            <p>We completely split up the engine models! You now have custom premium standalone spaces for drafting characters, building terrain grids, and rendering scripts. Check out the new media galleries below!</p>
-        </div>
-    </section>
+<section id="home-page" class="dashboard-page active-page">
+    <h1>Welcome <span id="welcomeName"></span></h1>
+</section>
 
-    <!-- 🎨 STANDALONE TAB: CHARACTER FORGE -->
-    <section id="character-page" class="dashboard-page">
-        <h1>🎨 Character Forge</h1>
-        <p class="subtitle">Draft conceptual profiles and hero assets instantly.</p>
-        <div class="card">
-            <input id="characterInput" placeholder="Ex: A cybernetic shinobi with cosmic neon hair">
-            <button onclick="runGeneration('character')">Forge Generation</button>
-            <div id="characterOutput" class="result" style="display:none;"></div>
-        </div>
-    </section>
+<section id="character-page" class="dashboard-page">
+    <div class="card">
+        <h2>Character Forge</h2>
+        <input id="characterInput">
+        <button onclick="runGeneration('character')">Generate</button>
+        <div id="characterOutput"></div>
+    </div>
+</section>
 
-    <!-- 🌍 STANDALONE TAB: WORLD WEAVER -->
-    <section id="world-page" class="dashboard-page">
-        <h1>🌍 World Weaver</h1>
-        <p class="subtitle">Map out geographical systems and magical realms.</p>
-        <div class="card">
-            <input id="worldInput" placeholder="Ex: An underwater obsidian city protected by ancient sea beasts">
-            <button onclick="runGeneration('world')">Weave Universe Layout</button>
-            <div id="worldOutput" class="result" style="display:none;"></div>
-        </div>
-    </section>
+<section id="world-page" class="dashboard-page">
+    <div class="card">
+        <h2>World Builder</h2>
+        <input id="worldInput">
+        <button onclick="runGeneration('world')">Generate</button>
+        <div id="worldOutput"></div>
+    </div>
+</section>
 
-    <!-- 🎬 STANDALONE TAB: MOVIE STUDIO -->
-    <section id="movie-page" class="dashboard-page">
-        <h1>🎬 Movie Studio</h1>
-        <p class="subtitle">Compile concepts into commercial box-office story pitches.</p>
-        <div class="card">
-            <input id="movieInput" placeholder="Ex: A high school esports player discovers their gaming actions affect real world timelines">
-            <button onclick="runGeneration('movie')">Pitch Production Sheet</button>
-            <div id="movieOutput" class="result" style="display:none;"></div>
-        </div>
-    </section>
+<section id="movie-page" class="dashboard-page">
+    <div class="card">
+        <h2>Movie Studio</h2>
+        <input id="movieInput">
+        <button onclick="runGeneration('movie')">Generate</button>
+        <div id="movieOutput"></div>
+    </div>
+</section>
 
-    <!-- 🖼️ NEW FEATURE: ANIME GALLERY -->
-    <section id="gallery-page" class="dashboard-page">
-        <h1>🖼️ Global Anime Showcase</h1>
-        <p class="subtitle">Trending artistic renders created by global designers.</p>
-        <div class="gallery-grid">
-            <div class="gallery-card">
-                <img src="https://image.pollinations.ai/p/cyberpunk%20mecha%20girl%20anime%20style?width=300&height=300&seed=111" alt="Art">
-                <div class="gallery-info"><b>Cyber Mecha Pilot</b><br><span style="color:var(--accent-orange)">@NeonX</span></div>
-            </div>
-            <div class="gallery-card">
-                <img src="https://image.pollinations.ai/p/fantasy%20floating%20castle%20anime%20style?width=300&height=300&seed=222" alt="Art">
-                <div class="gallery-info"><b>Aethelgard Citadel</b><br><span style="color:var(--accent-orange)">@CloudWeaver</span></div>
-            </div>
-            <div class="gallery-card">
-                <img src="https://image.pollinations.ai/p/samurai%20fighting%20in%20rain%20anime%20style?width=300&height=300&seed=333" alt="Art">
-                <div class="gallery-info"><b>Crimson Blade</b><br><span style="color:var(--accent-orange)">@OtakuMage</span></div>
-            </div>
-        </div>
-    </section>
+<section id="library-page" class="dashboard-page">
+    <div class="card">
+        <h2>Library</h2>
+        <div id="libraryContainer"></div>
+    </div>
+</section>
 
-    <!-- 📺 NEW FEATURE: WATCH ANIME (TRAILERS) -->
-    <section id="watch-page" class="dashboard-page">
-        <h1>📺 Streaming Deck</h1>
-        <p class="subtitle">Stream high-definition promotional trailers. Premium unlocks ad-free player options.</p>
-        <div class="video-grid">
-            <div class="video-card" onclick="playTrailer('https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                <img src="https://image.pollinations.ai/p/epic%20anime%20space%20battle?width=400&height=200&seed=99" alt="Thumbnail">
-                <div style="padding:15px;"><b>Starlight Rebellion</b><br><small style="color:grey;">Studio Bones • Trailer 1</small></div>
-            </div>
-            <div class="video-card" onclick="playTrailer('https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                <img src="https://image.pollinations.ai/p/dark%20fantasy%20anime%20demon?width=400&height=200&seed=88" alt="Thumbnail">
-                <div style="padding:15px;"><b>Chrono Curse: Zero</b><br><small style="color:grey;">Ufotable • Trailer 2</small></div>
-            </div>
-        </div>
-        
-        <!-- Live Embedded Video Frame Player Area -->
-        <div id="playerContainer" style="margin-top:30px; display:none;" class="card">
-            <h3 id="playingTitle">Now Streaming</h3>
-            <iframe id="videoPlayer" width="100%" height="450" src="" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>
-        </div>
-    </section>
-
-    <!-- 📚 MY LIBRARY -->
-    <section id="library-page" class="dashboard-page">
-        <h1>My Archives</h1>
-        <p class="subtitle">Every character profile, realm codex, and movie script you create is saved safely in local storage.</p>
-        <div class="library-grid" id="libraryContainer"></div>
-    </section>
-
-    <!-- 👤 PROFILE -->
-    <section id="profile-page" class="dashboard-page">
-        <h1>Profile Matrix</h1>
-        <p class="subtitle">Real-time usage analytics associated with this machine.</p>
-        <div class="profile-box">
-            <h3>User Identity: <span id="matrixUsername" style="color: var(--accent-orange)">-</span></h3>
-            <p id="tierDisplay"><b>Tier Class:</b> Standard Free Account</p>
-            <p><b>Total Creations Compiled:</b> <span id="statsCount" style="color:var(--accent-orange); font-weight:bold;">0</span></p>
-            <p><b>Storage Allocation:</b> Browser LocalStorage Enabled</p>
-        </div>
-    </section>
-
-    <!-- 💎 GO PRO -->
-    <section id="pro-page" class="dashboard-page">
-        <h1>Unlock Premium Engine Tier</h1>
-        <p class="subtitle">Gain access to unrestricted generation limits and extreme ultra-detailed graphic assets.</p>
-        <div class="card premium-card">
-            <h2>💎 ANIMEVERSE PRO tier</h2>
-            <p>Uncapped real-time AI Generation speeds</p>
-            <p>Access high-fidelity descriptive writing presets</p>
-            <p>Download generated illustrations natively</p>
-            <button onclick="simulateUpgrade()">Upgrade for $9.99/mo (Demo Test)</button>
-        </div>
-    </section>
+<section id="pro-page" class="dashboard-page">
+    <div class="card">
+        <h2>Pro Upgrade</h2>
+        <button onclick="simulateUpgrade()">Upgrade</button>
+    </div>
+</section>
 
 </main>
 
-<!-- 🧠 BRAIN GENERATION AND STORAGE SYSTEM -->
 <script>
-const charNames = ["Ren Hikari", "Kaelen Vex", "Sora Amamiya", "Asuka Kurogane"];
-const charPowers = ["Absolute Umbral manipulation", "Quantum Accelerating Fire Magic", "Starlight Weaver"];
-const charBackstories = ["was raised by an exiled clan in hiding.", "accidentally absorbed a forbidden artifact.", "woke up in an ancient ruin with no memories."];
+let isPremium = false;
 
-const worldNames = ["Neo-Aethelgard", "Zephyrus Prime", "The Obsidian Expanse"];
-const worldGeographies = ["A massive chain of floating landmasses.", "An endless landscape of bioluminescent mechanical forests."];
-
-const movieTitles = ["Wings of Retribution: Broken Sky", "The Last Alchemist: Shadow Legacy"];
-const moviePlots = ["A reluctant crew must pull off a dangerous heist against an emperor.", "When a massive rift opens in the sky, an estranged master must seal it."];
-
-let isPremiumUser = false; 
-
-document.addEventListener("DOMContentLoaded", () => {
-    let savedUser = localStorage.getItem("animeVerse_user");
-    if (savedUser) {
-        initializeDashboard(savedUser);
-    }
-    if (localStorage.getItem("animeVerse_premium") === "true") {
-        activatePremiumUI();
-    }
+/* NAVIGATION FIX */
+document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+        switchTab(item.dataset.page, item);
+    });
 });
 
+function switchTab(pageId, el) {
+    document.querySelectorAll(".dashboard-page")
+        .forEach(p => p.classList.remove("active-page"));
+
+    document.querySelectorAll(".nav-item")
+        .forEach(n => n.classList.remove("active"));
+
+    document.getElementById(pageId).classList.add("active-page");
+    el.classList.add("active");
+}
+
+/* LOGIN */
 function handleLogin() {
-    let name = document.getElementById("usernameInput").value.trim();
-    if (!name) return alert("Please enter a valid username!");
-    localStorage.setItem("animeVerse_user", name);
-    initializeDashboard(name);
-}
-
-function handleLogout() {
-    localStorage.removeItem("animeVerse_user");
-    localStorage.removeItem("animeVerse_premium");
-    isPremiumUser = false;
-    window.location.reload();
-}
-
-function initializeDashboard(username) {
+    let name = document.getElementById("usernameInput").value;
+    localStorage.setItem("user", name);
     document.getElementById("login-gate").style.display = "none";
-    document.getElementById("welcomeName").innerText = username;
-    document.getElementById("matrixUsername").innerText = username;
-    renderLibrary();
+    document.getElementById("welcomeName").innerText = name;
 }
 
-function switchTab(pageId, element) {
-    document.querySelectorAll('.dashboard-page').forEach(page => page.classList.remove('active-page'));
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active-page');
-    element.classList.add('active');
+/* AI TEXT GENERATION */
+async function generateAI(prompt) {
+    const res = await fetch("https://text.pollinations.ai/" + encodeURIComponent(prompt));
+    return await res.text();
 }
 
-function getRandom(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-}
+/* MAIN GENERATION */
+async function runGeneration(type) {
+    let input = document.getElementById(type + "Input").value;
+    let output = document.getElementById(type + "Output");
 
-function runGeneration(type) {
-    let idea = document.getElementById(`${type}Input`).value.trim();
-    if (!idea) return alert("Please enter a prompt first!");
+    output.innerHTML = "Generating...";
 
-    let outputEl = document.getElementById(`${type}Output`);
-    outputEl.style.display = "block";
+    let prompt = `Create anime ${type}: ${input}`;
+    let text = await generateAI(prompt);
 
-    let payload = "";
-    if (type === 'character') {
-        let name = getRandom(charNames);
-        payload = `<h3>🎭 Character Profile: ${name}</h3><b>Concept:</b> ${idea}<br><b>Powers:</b> ${getRandom(charPowers)}<br><b>Story:</b> ${name} ${getRandom(charBackstories)}`;
-    } else if (type === 'world') {
-        let wName = getRandom(worldNames);
-        payload = `<h3>🌍 Realm Codex: ${wName}</h3><b>Concept:</b> ${idea}<br><b>Geography:</b> ${getRandom(worldGeographies)}`;
-    } else {
-        let title = getRandom(movieTitles);
-        payload = `<h3>🎬 Film Production Sheet: ${title}</h3><b>Concept:</b> ${idea}<br><b>Synopsis:</b> ${getRandom(moviePlots)}`;
-    }
+    let img = `https://image.pollinations.ai/p/${encodeURIComponent(input + ", anime style")}?seed=${Math.random() * 99999}`;
 
-    let imageSeed = Math.floor(Math.random() * 99999);
-    let imageUrl = `https://image.pollinations.ai/p/${encodeURIComponent(idea + ", anime style")}?width=500&height=500&seed=${imageSeed}&nologo=true`;
-
-    outputEl.innerHTML = `
-        ${payload}<br><br>
-        <img class="gen-image" src="${imageUrl}" alt="Visual"><br>
-        <button class="download-btn" onclick="downloadAsset('${imageUrl}', '${type}')">💾 Download Illustration</button>
+    output.innerHTML = `
+        <div class="result">
+            ${text}
+            <img class="gen-image" src="${img}">
+        </div>
     `;
 
-    saveToStorage(type, idea, payload, imageUrl);
+    save(type, text, img);
 }
 
-// 📺 PREMIUM DECK PLAYER RULE
-window.playTrailer = function(embedUrl) {
-    if (!isPremiumUser) {
-        alert("📺 Ad Interruption: Free Tier users must wait for ads. Redirecting to Upgrade Page!");
-        switchTab('pro-page', document.querySelectorAll('.nav-item')[8]);
-        return;
-    }
-    document.getElementById("playerContainer").style.display = "block";
-    document.getElementById("videoPlayer").src = embedUrl;
-    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
-}
-
-// 🔒 STAGE-GATED DOWNLOAD CODE
-window.downloadAsset = async function(url, filenamePrefix) {
-    if (!isPremiumUser) {
-         alert("💎 Premium Feature: Upgrading to AnimeVerse PRO is required to download assets natively!");
-         switchTab('pro-page', document.querySelectorAll('.nav-item')[8]);
-         return;
-    }
-    try {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const fileUrl = window.URL.createObjectURL(blob);
-        const tempLink = document.createElement('a');
-        tempLink.href = fileUrl;
-        tempLink.download = `${filenamePrefix}_artwork.jpg`;
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
-    } catch (err) {
-        alert("Download complete! Or right click image to save manually.");
-    }
-}
-
-window.simulateUpgrade = function() {
-    localStorage.setItem("animeVerse_premium", "true");
-    activatePremiumUI();
-    alert("Success! Your Profile Matrix has been upgraded to PRO tier.");
-    switchTab('home-page', document.querySelectorAll('.nav-item')[0]);
-}
-
-function activatePremiumUI() {
-    isPremiumUser = true;
-    let tierDisplay = document.getElementById("tierDisplay");
-    if(tierDisplay) tierDisplay.innerHTML = `<b>Tier Class:</b> <span style="color:gold; font-weight:bold;">✨ PRO MEMBER ACTIVE</span>`;
-}
-
-function saveToStorage(category, userIdea, textHtml, imgUrl) {
-    let currentArchive = JSON.parse(localStorage.getItem("animeVerse_library")) || [];
-    let timestamp = new Date().toLocaleTimeString();
-    currentArchive.unshift({ category, userIdea, textHtml, imgUrl, timestamp });
-    localStorage.setItem("animeVerse_library", JSON.stringify(currentArchive));
+/* SAVE */
+function save(type, text, img) {
+    let data = JSON.parse(localStorage.getItem("lib") || "[]");
+    data.unshift({ type, text, img, time: Date.now() });
+    localStorage.setItem("lib", JSON.stringify(data));
     renderLibrary();
 }
 
+/* LIBRARY FIX */
 function renderLibrary() {
-    let currentArchive = JSON.parse(localStorage.getItem("animeVerse_library")) || [];
-    let container = document.getElementById("libraryContainer");
-    document.getElementById("statsCount").innerText = currentArchive.length;
+    let data = JSON.parse(localStorage.getItem("lib") || "[]");
+    let box = document.getElementById("libraryContainer");
 
-    if (currentArchive.length === 0) {
-        container.innerHTML =
+    if (!data.length) {
+        box.innerHTML = "No data yet";
+        return;
+    }
+
+    box.innerHTML = data.map(d => `
+        <div class="card">
+            <b>${d.type}</b><br>
+            ${d.text}<br>
+            <img src="${d.img}" style="width:100%; border-radius:10px;">
+        </div>
+    `).join("");
+}
+
+/* PRO */
+function simulateUpgrade() {
+    isPremium = true;
+    alert("Upgraded!");
+}
+
+/* INIT */
+window.onload = () => {
+    let u = localStorage.getItem("user");
+    if (u) {
+        document.getElementById("login-gate").style.display = "none";
+        document.getElementById("welcomeName").innerText = u;
+    }
+    renderLibrary();
+};
+</script>
+
+</body>
+</html>
