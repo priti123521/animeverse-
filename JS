@@ -175,3 +175,23 @@ window.addEventListener('load', () => {
     loadWorldList();
     loadMovieList();
 });
+function handleLogin() {
+    let name = document.getElementById("usernameInput").value.trim();
+    let pass = document.getElementById("passwordInput").value.trim();
+
+    if (!name || !pass) return alert("Fill all fields");
+
+    localStorage.setItem("user", name);
+    localStorage.setItem("pass", pass);
+
+    const loginGate = document.getElementById("login-gate");
+    if (loginGate) loginGate.style.display = "none";
+
+    const welcomeName = document.getElementById("welcomeName");
+    if (welcomeName) welcomeName.innerText = name;
+
+    // ADD THIS: Show home page after login
+    switchTab("home-page");
+    
+    loadProfile();
+}
