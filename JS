@@ -103,3 +103,75 @@ function setAvatar() {
         img.style.display = "block";
     }
 }
+function saveCharacter() {
+    let name = document.getElementById("charName").value.trim();
+    let desc = document.getElementById("charDesc").value.trim();
+    if (!name) return alert("Add a character name");
+    
+    let lib = JSON.parse(localStorage.getItem("lib") || "[]");
+    lib.push({type: "Character", text: name + ": " + desc});
+    localStorage.setItem("lib", JSON.stringify(lib));
+    
+    document.getElementById("charName").value = "";
+    document.getElementById("charDesc").value = "";
+    loadHomeStats();
+    loadCharacterList();
+}
+
+function loadCharacterList() {
+    let lib = JSON.parse(localStorage.getItem("lib") || "[]");
+    let chars = lib.filter(i => i.type === "Character");
+    let box = document.getElementById("charList");
+    box.innerHTML = chars.map(c => `<div>→ ${c.text}</div>`).join("") || "No characters yet";
+}
+
+function saveWorld() {
+    let name = document.getElementById("worldName").value.trim();
+    let desc = document.getElementById("worldDesc").value.trim();
+    if (!name) return alert("Add a world name");
+    
+    let lib = JSON.parse(localStorage.getItem("lib") || "[]");
+    lib.push({type: "World", text: name + ": " + desc});
+    localStorage.setItem("lib", JSON.stringify(lib));
+    
+    document.getElementById("worldName").value = "";
+    document.getElementById("worldDesc").value = "";
+    loadHomeStats();
+    loadWorldList();
+}
+
+function loadWorldList() {
+    let lib = JSON.parse(localStorage.getItem("lib") || "[]");
+    let worlds = lib.filter(i => i.type === "World");
+    let box = document.getElementById("worldList");
+    box.innerHTML = worlds.map(w => `<div>→ ${w.text}</div>`).join("") || "No worlds yet";
+}
+
+function saveMovie() {
+    let title = document.getElementById("movieTitle").value.trim();
+    let plot = document.getElementById("moviePlot").value.trim();
+    if (!title) return alert("Add a movie title");
+    
+    let lib = JSON.parse(localStorage.getItem("lib") || "[]");
+    lib.push({type: "Movie", text: title + ": " + plot});
+    localStorage.setItem("lib", JSON.stringify(lib));
+    
+    document.getElementById("movieTitle").value = "";
+    document.getElementById("moviePlot").value = "";
+    loadHomeStats();
+    loadMovieList();
+}
+
+function loadMovieList() {
+    let lib = JSON.parse(localStorage.getItem("lib") || "[]");
+    let movies = lib.filter(i => i.type === "Movie");
+    let box = document.getElementById("movieList");
+    box.innerHTML = movies.map(m => `<div>→ ${m.text}</div>`).join("") || "No movies yet";
+}
+
+// Call these when page loads so lists show up
+window.addEventListener('load', () => {
+    loadCharacterList();
+    loadWorldList();
+    loadMovieList();
+});
