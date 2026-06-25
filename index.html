@@ -50,3 +50,32 @@
     <script src="app.js"></script>
 </body>
 </html>
+<section id="character-page" class="dashboard-page">
+    <div class="card">
+        <h2>🎨 Create Character</h2>
+        <input type="text" id="charName" placeholder="Character Name">
+        <textarea id="charDesc" placeholder="Describe your character..." rows="4"></textarea>
+        <button onclick="saveCharacter()">Save Character</button>
+        <div id="charList" style="margin-top:15px;"></div>
+    </div>
+</section>
+
+<section id="world-page" class="dashboard-page">
+    <div class="card">
+        <h2>🌍 Build World</h2>
+        <input type="text" id="worldName" placeholder="World Name">
+        <textarea id="worldDesc" placeholder="Describe your world..." rows="4"></textarea>
+        <button onclick="saveWorld()">Save World</button>
+        <div id="worldList" style="margin-top:15px;"></div>
+    </div>
+</section>
+
+<section id="movie-page" class="dashboard-page">
+    <div class="card">
+        <h2>🎬 Generate Movie</h2>
+        <input type="text" id="movieTitle" placeholder="Movie Title">
+        <textarea id="moviePlot" placeholder="Plot idea..." rows="4"></textarea>
+        <button onclick="saveMovie()">Generate</button>
+        <div id="movieList" style="margin-top:15px;"></div>
+    </div>
+</section>
