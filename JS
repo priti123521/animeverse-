@@ -1,0 +1,105 @@
+let homeVisible = true;
+
+window.onload = () => {
+    let u = localStorage.getItem("user");
+    let p = localStorage.getItem("pass");
+
+    if (u && p) {
+        const loginGate = document.getElementById("login-gate");
+        if (loginGate) loginGate.style.display = "none";
+
+        const welcomeName = document.getElementById("welcomeName");
+        if (welcomeName) welcomeName.innerText = u;
+    }
+
+    let avatar = localStorage.getItem("avatar");
+    if (avatar) {
+        let img = document.getElementById("avatarPreview");
+        if (img) {
+            img.src = avatar;
+            img.style.display = "block";
+        }
+    }
+
+    loadHomeStats();
+    loadProfile();
+
+    if (typeof renderLibrary === "function") {
+        renderLibrary();
+    }
+};
+
+function toggleHome() {
+    homeVisible = !homeVisible;
+    const home = document.getElementById("home-page");
+
+    if (!homeVisible) {
+        if (home) home.classList.remove("active-page");
+    } else {
+        switchTab("home-page");
+    }
+}
+
+function switchTab(pageId) {
+    document.querySelectorAll('.dashboard-page').forEach(p => p.classList.remove('active-page'));
+    const target = document.getElementById(pageId);
+    if (target) target.classList.add('active-page');
+}
+
+function loadHomeStats() {
+    let data = JSON.parse(localStorage.getItem("lib") || "[]");
+    let box = document.getElementById("recentActivity");
+    if (!box) return;
+
+    if (!data.length) {
+        box.innerHTML = "No creations yet.";
+        return;
+    }
+
+    box.innerHTML = data.slice(0, 3).map(d => `
+        <div style="margin-bottom:10px;">
+            <b>${d.type}</b> → ${d.text.slice(0, 60)}...
+        </div>
+    `).join("");
+}
+
+function handleLogin() {
+    let name = document.getElementById("usernameInput").value.trim();
+    let pass = document.getElementById("passwordInput").value.trim();
+
+    if (!name || !pass) return alert("Fill all fields");
+
+    localStorage.setItem("user", name);
+    localStorage.setItem("pass", pass);
+
+    const loginGate = document.getElementById("login-gate");
+    if (loginGate) loginGate.style.display = "none";
+
+    const welcomeName = document.getElementById("welcomeName");
+    if (welcomeName) welcomeName.innerText = name;
+
+    loadProfile();
+}
+
+function loadProfile() {
+    const profileName = document.getElementById("profileName");
+    const profileCount = document.getElementById("profileCount");
+
+    if (profileName) profileName.innerText = localStorage.getItem("user") || "-";
+
+    let data = JSON.parse(localStorage.getItem("lib") || "[]");
+    if (profileCount) profileCount.innerText = data.length;
+}
+
+function setAvatar() {
+    let url = document.getElementById("avatarInput").value;
+    if (!url) return;
+
+    localStorage.setItem("avatar", url);
+
+    let img = document.getElementById("avatarPreview");
+    if (img) {
+        img.src = url;
+        img.style.display = "block";
+    }
+}
