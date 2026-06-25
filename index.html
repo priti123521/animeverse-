@@ -4,21 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <style>
-        /* CSS Styles */
-        .home-hidden .main-content {
-            margin-left: 0;
-        }
-
-        .home-toggle {
-            margin: 10px;
-            padding: 8px;
-            background: #222;
-            color: white;
-            border: 1px solid #444;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -35,9 +21,9 @@
 
         <div class="card">
             <h3>⚡ Quick Actions</h3>
-            <button onclick="switchTab('character-page', document.querySelector('[data-page=\"character-page\"]'))">Create Character</button>
-            <button onclick="switchTab('world-page', document.querySelector('[data-page=\"world-page\"]'))">Build World</button>
-            <button onclick="switchTab('movie-page', document.querySelector('[data-page=\"movie-page\"]'))">Generate Movie</button>
+            <button onclick="switchTab('character-page')">Create Character</button>
+            <button onclick="switchTab('world-page')">Build World</button>
+            <button onclick="switchTab('movie-page')">Generate Movie</button>
         </div>
 
         <div class="card">
@@ -49,9 +35,8 @@
     <section id="profile-page" class="dashboard-page">
         <div class="card">
             <h2>👤 Profile Matrix</h2>
-
             <p><b>Username:</b> <span id="profileName"></span></p>
-            <p><b>Password:</b> <span id="profilePass">••••••••</span></p>
+            <p><b>Password:</b> <span id="profilePass">••••</span></p>
             <p><b>Tier:</b> <span id="profileTier">Free User</span></p>
             <p><b>Total Creations:</b> <span id="profileCount"></span></p>
 
@@ -62,120 +47,6 @@
         </div>
     </section>
 
-    <script>
-        let homeVisible = true;
-
-        // Unified initialization on window load
-        window.onload = () => {
-            // Check Login Status
-            let u = localStorage.getItem("user");
-            let p = localStorage.getItem("pass");
-
-            if (u && p) {
-                const loginGate = document.getElementById("login-gate");
-                if (loginGate) loginGate.style.display = "none";
-                
-                const welcomeName = document.getElementById("welcomeName");
-                if (welcomeName) welcomeName.innerText = u;
-            }
-
-            // Load Avatar Image
-            let avatar = localStorage.getItem("avatar");
-            if (avatar) {
-                let img = document.getElementById("avatarPreview");
-                if (img) {
-                    img.src = avatar;
-                    img.style.display = "block";
-                }
-            }
-
-            // Load components data
-            loadHomeStats();
-            loadProfile();
-            
-            // Safe call in case renderLibrary exists globally in your project
-            if (typeof renderLibrary === "function") {
-                renderLibrary();
-            }
-        };
-
-        // Navigation & UI Toggle Functions
-        function toggleHome() {
-            homeVisible = !homeVisible;
-            const home = document.getElementById("home-page");
-
-            if (!homeVisible) {
-                if (home) home.classList.remove("active-page");
-            } else {
-                if (typeof switchTab === "function") {
-                    switchTab("home-page", document.querySelector('[data-page="home-page"]'));
-                }
-            }
-        }
-
-        // Stats Processing Functions
-        function loadHomeStats() {
-            let data = JSON.parse(localStorage.getItem("lib") || "[]");
-            let box = document.getElementById("recentActivity");
-            if (!box) return;
-
-            if (!data.length) {
-                box.innerHTML = "No creations yet.";
-                return;
-            }
-
-            box.innerHTML = data.slice(0, 3).map(d => `
-                <div style="margin-bottom:10px;">
-                    <b>${d.type}</b> → ${d.text.slice(0, 60)}...
-                </div>
-            `).join("");
-        }
-
-        // Authentication Handler
-        function handleLogin() {
-            let name = document.getElementById("usernameInput").value.trim();
-            let pass = document.getElementById("passwordInput").value.trim();
-
-            if (!name || !pass) return alert("Fill all fields");
-
-            localStorage.setItem("user", name);
-            localStorage.setItem("pass", pass);
-
-            const loginGate = document.getElementById("login-gate");
-            if (loginGate) loginGate.style.display = "none";
-            
-            const welcomeName = document.getElementById("welcomeName");
-            if (welcomeName) welcomeName.innerText = name;
-            
-            loadProfile(); // Refresh profile values dynamically on login
-        }
-
-        // Profile Management Functions
-        function loadProfile() {
-            const profileName = document.getElementById("profileName");
-            const profilePass = document.getElementById("profilePass");
-            const profileCount = document.getElementById("profileCount");
-
-            if (profileName) profileName.innerText = localStorage.getItem("user") || "-";
-            if (profilePass) profilePass.innerText = localStorage.getItem("pass") || "-";
-
-            let data = JSON.parse(localStorage.getItem("lib") || "[]");
-            if (profileCount) profileCount.innerText = data.length;
-        }
-
-        function setAvatar() {
-            let url = document.getElementById("avatarInput").value;
-            if (!url) return;
-
-            localStorage.setItem("avatar", url);
-
-            let img = document.getElementById("avatarPreview");
-            if (img) {
-                img.src = url;
-                img.style.display = "block";
-            }
-        }
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
-
